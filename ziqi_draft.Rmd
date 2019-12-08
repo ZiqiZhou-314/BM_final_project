@@ -1,0 +1,149 @@
+---
+title: "ziqi_draft"
+author: "Ziqi Zhou"
+date: "12/7/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(multcomp)
+library(faraway)
+
+library(patchwork)
+library(leaps)
+library(caret)
+library(glmnet)
+library(patchwork)
+library(broom)
+library(modelr)
+library(olsrr)
+library(arsenal)
+
+
+my_controls = tableby.control(
+total = TRUE,
+test = FALSE,
+numeric.stats = c("meansd", "medianq1q3"), cat.stats = c("countpct"),
+stats.labels = list(
+meansd = "Mean (SD)", medianq1q3 = "Median (Q1, Q3)", countpct = "N (%)"),
+digits = 2)
+```
+
+## Read and clean the data
+
+```{r}
+data = read_csv("./data/Lawsuit.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(dept = as.factor(dept),
+         gender = as.factor(gender),
+         clin = as.factor(clin),
+         cert = as.factor(cert),
+         rank = as.factor(rank)) 
+sum(is.na(data))
+```
+There is no missing value in this dataset.
+**waiting for recode after analysis**
+
+```{r}
+class(data$dept)
+```
+
+```{r}
+tab1 = tableby(gender ~ dept + clin + cert + prate + exper + rank + sal94 + sal95,
+               data = data,
+               total = TRUE,
+               control = my_controls
+               )
+
+summary(tab1, title = "Descriptive Statistics", text=T) %>% 
+  knitr::kable()
+
+```
+
+## Exploratory about the distribution of outcome
+```{r}
+data %>% 
+  ggplot(aes(x = sal94)) + 
+  geom_histogram()
+
+data %>% 
+  ggplot(aes(x = log(sal94))) + 
+  geom_histogram()
+```
+
+```{r}
+data %>% 
+  ggplot(aes(x = sal95)) + 
+  geom_histogram()
+
+data %>% 
+  ggplot(aes(x = log(sal95))) + 
+  geom_histogram()
+```
+
+```{r}
+data = data %>% 
+  mutate(log_sal94 = log(sal94),
+         log_sal95 = log(sal95))
+```
+We could see that the sal94 and sal 95 are obviously right skewed, so we choose log transformation.
+
+
+## fit the model
+
+
+```{r}
+data94 = data %>% 
+  dplyr::select(-sal94, -sal95, -log_sal95,-id) %>% 
+  dplyr::select(log_sal94, everything())
+
+data95 = data %>% 
+  dplyr::select(-sal94, -sal95, -log_sal94,-id) %>% 
+  dplyr::select(log_sal95, everything())
+
+
+pairs(data94)
+pairs(data95)
+```
+We use the stepwise regression.
+```{r}
+mult.fit <- lm(log_sal94 ~ . , data=data94)
+step(mult.fit, direction='backward')
+step(mult.fit, direction = 'both') 
+```
+
+```{r}
+model94 = lm(log_sal94 ~ dept + clin + cert + exper + rank + prate,data = data94) 
+anova(model94)
+plot(model94)
+
+influ.point94 <- influence.measures(model94)
+summary(influ.point94) %>% knitr::kable()
+
+model94_1 = lm(log_sal94 ~ dept + clin + cert + exper + rank +  gender + prate,data = data94) 
+anova(model94_1)
+plot(model94_1)
+```
+
+```{r}
+multi.fit95 = lm(log_sal95 ~ . , data=data95)
+step(multi.fit95, direction = 'both')
+```
+
+```{r}
+model95 = lm(log_sal95 ~  dept + gender + clin + cert + exper + 
+    rank, data = data95) 
+tidy(model95)
+anova(model95)
+plot(model95)
+vif(model95)
+
+influ.point95 <- influence.measures(model95)
+summary(influ.point95) %>% knitr::kable()
+```
+
+
+
+
