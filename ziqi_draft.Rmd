@@ -115,7 +115,8 @@ step(mult.fit, direction = 'both')
 ```
 
 ```{r}
-model94 = lm(log_sal94 ~ dept + clin + cert + exper + rank + prate,data = data94) 
+model94 = lm(log_sal94 ~ dept + clin + cert + exper + rank + prate,data = data94)
+summary(model94)
 anova(model94)
 plot(model94)
 

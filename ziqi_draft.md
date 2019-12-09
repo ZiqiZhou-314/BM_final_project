@@ -249,7 +249,41 @@ step(mult.fit, direction = 'both')
     ##     0.13551      0.22428
 
 ``` r
-model94 = lm(log_sal94 ~ dept + clin + cert + exper + rank + prate,data = data94) 
+model94 = lm(log_sal94 ~ dept + clin + cert + exper + rank + prate,data = data94)
+summary(model94)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log_sal94 ~ dept + clin + cert + exper + rank + 
+    ##     prate, data = data94)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.35367 -0.08193 -0.01482  0.08201  0.90388 
+    ## 
+    ## Coefficients:
+    ##              Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 11.134329   0.130017  85.638  < 2e-16 ***
+    ## dept2       -0.177429   0.029134  -6.090 4.25e-09 ***
+    ## dept3        0.166082   0.038676   4.294 2.51e-05 ***
+    ## dept4        0.135920   0.052358   2.596 0.009993 ** 
+    ## dept5        0.489498   0.044962  10.887  < 2e-16 ***
+    ## dept6        0.861483   0.061503  14.007  < 2e-16 ***
+    ## clin1        0.151748   0.040326   3.763 0.000209 ***
+    ## cert1        0.193940   0.021271   9.118  < 2e-16 ***
+    ## exper        0.018293   0.001805  10.133  < 2e-16 ***
+    ## rank2        0.135514   0.023251   5.828 1.73e-08 ***
+    ## rank3        0.224279   0.025783   8.699 4.65e-16 ***
+    ## prate       -0.026486   0.016873  -1.570 0.117748    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.1339 on 249 degrees of freedom
+    ## Multiple R-squared:  0.9336, Adjusted R-squared:  0.9306 
+    ## F-statistic: 318.1 on 11 and 249 DF,  p-value: < 2.2e-16
+
+``` r
 anova(model94)
 ```
 

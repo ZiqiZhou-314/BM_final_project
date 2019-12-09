@@ -1,7 +1,10 @@
 ---
-title: "Data Analysis"
+title: "Qimin's model building"
+author: "Qimin Zhang"
 date: "12/7/2019"
-output: github_document
+output: 
+  github_document:
+  latex_engine: xelatex
 ---
 
 ```{r setup, include=FALSE}
@@ -68,17 +71,6 @@ lm(log(sal_average) ~ . , data = data %>% mutate(sal_average = (sal94 + sal95)/2
   summary()
 ```
 
-```{r}
-lm(log(sal_average) ~ . , data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95) %>% filter(gender == 0) %>% dplyr::select(-gender)) %>% 
-  step(direction='backward') %>% 
-  summary()
-```
-
-```{r}
-lm(log(sal_average) ~ . , data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95) %>% filter(gender == 1) %>% dplyr::select(-gender)) %>% 
-  step(direction='backward') %>% 
-  summary()
-```
 
 ```{r}
 lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*dept + gender*clin + gender*cert + gender*exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
