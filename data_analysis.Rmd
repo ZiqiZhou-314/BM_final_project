@@ -1,30 +1,97 @@
 ---
-title: "data_analysis"
-author: "Qimin Zhang"
+title: "Data Analysis"
 date: "12/7/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(dplyr)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r message=FALSE, warning=FALSE}
+data = read_csv("data/Lawsuit.csv") %>% 
+  janitor::clean_names() %>% 
+  dplyr::select(-id) %>% 
+  mutate(dept = as.factor(dept),
+         gender = as.factor(gender),
+         clin = as.factor(clin),
+         cert = as.factor(cert),
+         rank = as.factor(rank))
 ```
 
-## Including Plots
+Look at the distribution of all variables.
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+data %>%
+  mutate(sal_average = (sal94 + sal95)/2) %>% 
+  keep(is.numeric) %>%
+  gather() %>% 
+  ggplot(aes(value)) +
+    facet_wrap(~ key, scales = "free") +
+    geom_density() +
+    labs(
+    title = "Density plot of all numeric variables"
+  )
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+We can see that they are all not normal. Let's try log transformation.
+
+```{r}
+data %>%
+  mutate(sal_average = (sal94 + sal95)/2) %>%
+  mutate(
+    log_exper = log(exper),
+    log_prate = log(prate),
+    log_sal_average = log(sal_average),
+    log_sal94 = log(sal94),
+    log_sal95 = log(sal95)
+  ) %>% 
+  dplyr::select(-exper, -prate, -sal_average, -sal94, -sal95) %>% 
+  keep(is.numeric) %>%
+  gather() %>% 
+  ggplot(aes(value)) +
+    facet_wrap(~ key, scales = "free") +
+    geom_density() +
+    labs(
+    title = "Density plot of all log numeric variables"
+  )
+```
+
+The salaries and exper seem to be normal, while prate is still not normal.
+
+```{r}
+lm(log(sal_average) ~ . , data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  step(direction='backward') %>% 
+  summary()
+```
+
+```{r}
+lm(log(sal_average) ~ . , data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95) %>% filter(gender == 0) %>% dplyr::select(-gender)) %>% 
+  step(direction='backward') %>% 
+  summary()
+```
+
+```{r}
+lm(log(sal_average) ~ . , data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95) %>% filter(gender == 1) %>% dplyr::select(-gender)) %>% 
+  step(direction='backward') %>% 
+  summary()
+```
+
+```{r}
+lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*dept + gender*clin + gender*cert + gender*exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+```{r}
+lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*exper, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+```{r}
+lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*exper, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
