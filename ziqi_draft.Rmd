@@ -40,7 +40,8 @@ data = read_csv("./data/Lawsuit.csv") %>%
          gender = as.factor(gender),
          clin = as.factor(clin),
          cert = as.factor(cert),
-         rank = as.factor(rank)) 
+         rank = as.factor(rank))  
+
 sum(is.na(data))
 ```
 There is no missing value in this dataset.
@@ -146,5 +147,24 @@ summary(influ.point95) %>% knitr::kable()
 ```
 
 
+# Separate the male and female.
+
+```{r}
+female = data %>% 
+  filter(gender == 0)
+
+male = data %>% 
+  filter(gender == 1)
+
+model95_male = lm(log_sal95 ~  dept +  clin + cert + exper + 
+    rank, data = male) 
+
+summary(model95_male)
+
+
+model95_female = lm(log_sal95 ~  dept +  clin + cert + exper + 
+    rank, data = female) 
+summary(model95_female)
+```
 
 
