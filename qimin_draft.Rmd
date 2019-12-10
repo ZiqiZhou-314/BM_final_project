@@ -65,22 +65,105 @@ data %>%
 
 The salaries and exper seem to be normal, while prate is still not normal.
 
+Fit model with sal_average as response.
+
 ```{r}
 lm(log(sal_average) ~ . , data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
   step(direction='backward') %>% 
   summary()
 ```
 
+Fit model with sal94 as response.
 
 ```{r}
-lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*dept + gender*clin + gender*cert + gender*exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+lm(log(sal94) ~ . , data = data  %>% dplyr::select(-sal95)) %>% 
+  step(direction='backward') %>% 
   summary()
 ```
+
+Fit model with sal95 as response.
+
+```{r}
+lm(log(sal95) ~ . , data = data  %>% dplyr::select(-sal94)) %>% 
+  step(direction='backward') %>% 
+  summary()
+```
+
+Check if gender is a confounder for these variables.
+
+```{r}
+lm(formula = log(sal_average) ~ dept, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+
+lm(formula = log(sal_average) ~ dept + gender, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+```{r}
+lm(formula = log(sal_average) ~ clin, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+
+lm(formula = log(sal_average) ~ clin + gender, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+```{r}
+lm(formula = log(sal_average) ~ cert, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+
+lm(formula = log(sal_average) ~ cert + gender, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+```{r}
+lm(formula = log(sal_average) ~ prate, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+
+lm(formula = log(sal_average) ~ prate + gender, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+```{r}
+lm(formula = log(sal_average) ~ exper, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+
+lm(formula = log(sal_average) ~ exper + gender, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+```{r}
+lm(formula = log(sal_average) ~ rank, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+
+lm(formula = log(sal_average) ~ rank + gender, data = data %>% mutate(sal_average = (sal94 + 
+    sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+So the dept, exp and rank are confounded by the gender.
+
+```{r}
+lm(log(sal_average) ~ (dept + clin + cert + exper + rank)*gender, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
 
 ```{r}
 lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*exper, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
   summary()
 ```
+
 
 ```{r}
 lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*exper, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
