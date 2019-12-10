@@ -12,7 +12,7 @@ data = read_csv("./data/Lawsuit.csv") %>%
          gender = as.factor(gender),
          clin = as.factor(clin),
          cert = as.factor(cert),
-         rank = as.factor(rank)) 
+         rank = as.factor(rank))  
 ```
 
     ## Parsed with column specification:
@@ -507,3 +507,80 @@ summary(influ.point95) %>% knitr::kable()
 | 174 |   0.1381951 |   0.0001089 | \-0.0007720 |   0.0306671 | \-0.0903893 |   0.0576509 | \-0.0701857 | \-0.0680040 | \-0.0672228 | \-0.0691977 | \-0.1812007 |   0.0602425 | \-0.3959901 | 0.8502013 | 0.0128589 | 0.0301974 |
 | 184 |   0.6252095 |   0.2185712 |   0.1630793 |   0.5364623 |   1.0035154 |   0.5285472 |   0.7549406 | \-0.9425989 | \-0.8432263 | \-0.3589515 | \-0.5145683 | \-0.2649298 |   1.8991935 | 0.0812275 | 0.2426615 | 0.0563265 |
 | 208 | \-0.0067702 | \-0.0063573 | \-0.0135738 | \-0.0437526 |   0.1087986 | \-0.0169271 | \-0.1871305 |   0.0579556 |   0.0411076 |   0.2124807 | \-0.1399512 | \-0.1809242 |   0.4257288 | 0.8137569 | 0.0148095 | 0.0295714 |
+
+# Separate the male and female.
+
+``` r
+female = data %>% 
+  filter(gender == 0)
+
+male = data %>% 
+  filter(gender == 1)
+
+model95_male = lm(log_sal95 ~  dept +  clin + cert + exper + 
+    rank, data = male) 
+
+summary(model95_male)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log_sal95 ~ dept + clin + cert + exper + rank, data = male)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.30978 -0.07447 -0.00494  0.06684  0.84493 
+    ## 
+    ## Coefficients:
+    ##              Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 11.082523   0.039141 283.142  < 2e-16 ***
+    ## dept2       -0.133051   0.039994  -3.327  0.00112 ** 
+    ## dept3        0.241664   0.054168   4.461 1.63e-05 ***
+    ## dept4        0.244452   0.054716   4.468 1.59e-05 ***
+    ## dept5        0.567918   0.039101  14.524  < 2e-16 ***
+    ## dept6        0.972003   0.044176  22.003  < 2e-16 ***
+    ## clin1        0.168103   0.032798   5.125 9.40e-07 ***
+    ## cert1        0.189938   0.029611   6.414 1.91e-09 ***
+    ## exper        0.016687   0.002036   8.198 1.23e-13 ***
+    ## rank2        0.094946   0.032990   2.878  0.00461 ** 
+    ## rank3        0.187386   0.034639   5.410 2.57e-07 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.1352 on 144 degrees of freedom
+    ## Multiple R-squared:  0.9282, Adjusted R-squared:  0.9233 
+    ## F-statistic: 186.3 on 10 and 144 DF,  p-value: < 2.2e-16
+
+``` r
+model95_female = lm(log_sal95 ~  dept +  clin + cert + exper + 
+    rank, data = female) 
+summary(model95_female)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log_sal95 ~ dept + clin + cert + exper + rank, data = female)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.32857 -0.07590 -0.00477  0.07748  0.27057 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 10.95254    0.04590 238.609  < 2e-16 ***
+    ## dept2       -0.19836    0.04275  -4.640 1.11e-05 ***
+    ## dept3        0.14924    0.04978   2.998 0.003471 ** 
+    ## dept4        0.20510    0.04983   4.116 8.22e-05 ***
+    ## dept5        0.53811    0.04598  11.703  < 2e-16 ***
+    ## dept6        0.92563    0.07341  12.609  < 2e-16 ***
+    ## clin1        0.24302    0.03161   7.688 1.36e-11 ***
+    ## cert1        0.16543    0.03342   4.949 3.22e-06 ***
+    ## exper        0.02790    0.00452   6.173 1.64e-08 ***
+    ## rank2        0.14183    0.03624   3.914 0.000171 ***
+    ## rank3        0.20257    0.05042   4.018 0.000118 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.1278 on 95 degrees of freedom
+    ## Multiple R-squared:  0.9278, Adjusted R-squared:  0.9202 
+    ## F-statistic: 122.1 on 10 and 95 DF,  p-value: < 2.2e-16

@@ -1,0 +1,14 @@
+---
+title: "meeting record"
+author: "Ziqi Zhou"
+date: "12/10/2019"
+output: html_document
+---
+
+It is clear that the gender in the linear model is not signifant so we have to do something.
+
+confouder
+
+interaction
+
+separate the male and female.
