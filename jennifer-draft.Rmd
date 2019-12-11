@@ -115,10 +115,12 @@ f2=lm(trans.sal95~dept+clin+cert+Prate+Exper+rank*gender)
 summary(f2)
 ```
 
+Residual plots for 1995
 ```{r}
 par(mfrow=c(2,2))
 plot(f2)
 ```
+
 Average Salary of 1994 and 1995
 ```{r}
 mean.salary=(Sal94+Sal95)/2
@@ -145,12 +147,18 @@ summary(lm(log.mean~gender*Exper)) # no interaction
 f3= lm(log.mean~dept+clin+cert+Prate+Exper+gender*rank)
 summary(f3);
 ```
- MULTICOLLINEARITY
-suspect multicolinearity of publication rate since there is relationship
-between publication rate and experience; also those who clin=0 (primarily research based) would have more published than those who do not?? 
+ 
+MULTICOLLINEARITY
+suspect multicolinearity of publication rate (based on literature and background research)
+```{r}
+cor(Lawsuit)
+```
+high correlation between Prate-clin and prate-dept
 
-#need to check VIF
+#can also check VIF
+should drop prate variable
 
+******* final model *********** 
 ```{r}
 f4= lm(log.mean~dept+clin+cert+Exper+gender*rank)
 summary(f4)
@@ -161,9 +169,16 @@ plot(f4)
 
 ######### outliers and influence points
 ```{r}
+rstandard(f4)
+```
+
+```{r}
 hat=hatvalues(f4); hat
 hat[hat>0.2]
 #named numeric(0)
+```
+
+```{r}
 
 # remove observation 184 from the mean salary
 remove_184=Lawsuit[-c(184),]
