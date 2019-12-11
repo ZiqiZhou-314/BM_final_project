@@ -158,7 +158,6 @@ summary(f4)
 par(mfrow=c(2,2))
 plot(f4)
 ```
-```
 
 ######### outliers and influence points
 ```{r}
