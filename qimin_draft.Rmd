@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readxl)
 library(dplyr)
+library(caret)
 ```
 
 ```{r message=FALSE, warning=FALSE}
@@ -220,13 +221,45 @@ lm(log(sal_average) ~ gender*rank, data = data %>% mutate(sal_average = (sal94 +
 Rank is a effect measure modifier between gender and salary.
 
 ```{r}
-lm(log(sal_average) ~ gender + dept + exper + clin + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+lm(log(sal_average) ~ gender + dept + exper + clin + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
   summary()
 ```
-
 
 ```{r message=FALSE, warning=FALSE}
 which(lm(log(sal_average) ~ gender + dept + exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
   cooks.distance() > 0.5 | lm(log(sal_average) ~ gender + dept + exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
   cooks.distance() > 4/nrow(data))
 ```
+
+```{r}
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + clin + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+```{r}
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+```{r}
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + clin + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+```{r}
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
