@@ -171,3 +171,111 @@ plot(remove.mod)
 ```
 
 ![](method_draft_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+### stratified if needed.
+
+``` r
+data_rank_3 = data %>% 
+  filter(rank == "Full professor")
+data_rank_2 = data %>% 
+  filter(rank == "Associate")
+data_rank_1 = data %>% 
+  filter(rank == "Assistant")
+
+final_model_3 = lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = data_rank_3)
+summary(final_model_3)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log_mean_sal ~ dept + clin + cert + exper + gender, 
+    ##     data = data_rank_3)
+    ## 
+    ## Residuals:
+    ##       Min        1Q    Median        3Q       Max 
+    ## -0.279999 -0.079443 -0.000564  0.075727  0.253899 
+    ## 
+    ## Coefficients:
+    ##                                  Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)                     11.247757   0.048321 232.773  < 2e-16 ***
+    ## deptPhysiology                  -0.127860   0.038834  -3.292  0.00152 ** 
+    ## deptGenetics                     0.248823   0.055205   4.507 2.38e-05 ***
+    ## deptPediatrics                   0.166793   0.066371   2.513  0.01412 *  
+    ## deptMedicine                     0.528191   0.039209  13.471  < 2e-16 ***
+    ## deptSurgery                      0.948635   0.050331  18.848  < 2e-16 ***
+    ## clinPrimarily clinical emphasis  0.179305   0.033412   5.367 8.61e-07 ***
+    ## certBoard Certified              0.258010   0.033989   7.591 7.14e-11 ***
+    ## exper                            0.014871   0.002253   6.601 5.15e-09 ***
+    ## genderMales                     -0.040413   0.036217  -1.116  0.26805    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.1165 on 75 degrees of freedom
+    ## Multiple R-squared:  0.9511, Adjusted R-squared:  0.9452 
+    ## F-statistic: 161.9 on 9 and 75 DF,  p-value: < 2.2e-16
+
+``` r
+final_model_2 = lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = data_rank_2)
+summary(final_model_2)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log_mean_sal ~ dept + clin + cert + exper + gender, 
+    ##     data = data_rank_2)
+    ## 
+    ## Residuals:
+    ##       Min        1Q    Median        3Q       Max 
+    ## -0.268895 -0.061719  0.008443  0.069568  0.186993 
+    ## 
+    ## Coefficients:
+    ##                                  Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)                     11.093068   0.045411 244.283  < 2e-16 ***
+    ## deptPhysiology                  -0.189342   0.043481  -4.355 5.99e-05 ***
+    ## deptGenetics                     0.170588   0.055740   3.060 0.003439 ** 
+    ## deptPediatrics                   0.210069   0.055921   3.757 0.000424 ***
+    ## deptMedicine                     0.507098   0.050051  10.132 4.30e-14 ***
+    ## deptSurgery                      0.931900   0.057099  16.321  < 2e-16 ***
+    ## clinPrimarily clinical emphasis  0.220247   0.037705   5.841 3.06e-07 ***
+    ## certBoard Certified              0.200488   0.031803   6.304 5.53e-08 ***
+    ## exper                            0.021512   0.002619   8.214 4.45e-11 ***
+    ## genderMales                     -0.013277   0.031011  -0.428 0.670252    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.1033 on 54 degrees of freedom
+    ## Multiple R-squared:  0.9621, Adjusted R-squared:  0.9558 
+    ## F-statistic: 152.2 on 9 and 54 DF,  p-value: < 2.2e-16
+
+``` r
+final_model_1= lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = data_rank_1)
+summary(final_model_1)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log_mean_sal ~ dept + clin + cert + exper + gender, 
+    ##     data = data_rank_1)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.30995 -0.09230 -0.01370  0.07692  0.78854 
+    ## 
+    ## Coefficients:
+    ##                                  Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)                     10.958748   0.058460 187.457  < 2e-16 ***
+    ## deptPhysiology                  -0.201314   0.063379  -3.176 0.001973 ** 
+    ## deptGenetics                     0.143432   0.069186   2.073 0.040681 *  
+    ## deptPediatrics                   0.255421   0.066715   3.829 0.000223 ***
+    ## deptMedicine                     0.600806   0.061033   9.844  < 2e-16 ***
+    ## deptSurgery                      0.943082   0.070044  13.464  < 2e-16 ***
+    ## clinPrimarily clinical emphasis  0.179071   0.042166   4.247 4.80e-05 ***
+    ## certBoard Certified              0.119828   0.040890   2.931 0.004176 ** 
+    ## exper                            0.024735   0.005354   4.620 1.12e-05 ***
+    ## genderMales                      0.082656   0.035347   2.338 0.021316 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.1541 on 102 degrees of freedom
+    ## Multiple R-squared:  0.9126, Adjusted R-squared:  0.9049 
+    ## F-statistic: 118.3 on 9 and 102 DF,  p-value: < 2.2e-16

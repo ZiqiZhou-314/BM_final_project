@@ -115,4 +115,22 @@ plot(remove.mod)
 
 
 
+### stratified if needed.
+```{r}
+data_rank_3 = data %>% 
+  filter(rank == "Full professor")
+data_rank_2 = data %>% 
+  filter(rank == "Associate")
+data_rank_1 = data %>% 
+  filter(rank == "Assistant")
+
+final_model_3 = lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = data_rank_3)
+summary(final_model_3)
+
+final_model_2 = lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = data_rank_2)
+summary(final_model_2)
+
+final_model_1= lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = data_rank_1)
+summary(final_model_1)
+```
 
