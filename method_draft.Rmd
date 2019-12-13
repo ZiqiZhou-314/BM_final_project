@@ -1,0 +1,118 @@
+---
+title: "method_draft"
+author: "Ziqi Zhou"
+date: "12/13/2019"
+output: github_document
+---
+
+# Method
+
+Our dataset contains 7 factors that are potentially associated with the salaries of the faculties. These are departure, gender, what they emphasis(clinical or research), cert(borad certified or not certified), publication rate(publications on CV/ years between CV date and MD date), years since obtaining MD and rank. And the chose the mean of salary in academic year 1994 and salary after increment to salary in academic year 1994 as our outcome. First, we drew plots to see the distribution of outcome, and we found it was right skewed so we decided to make log transformation. The distribution for the outcome are in supplement(fig.1). After our literature reading, we assumed that the gender was the main interested variable and put gender into the model. Therefore, we had a pool of 7 variable candidates to build a model whose purpose was find the association between the salary and some variables.
+
+First, for the mean of salaries, we started with linear regression with gender. Then we found that dept, clin, cert, prate and exper are confounders and there was interaction between rank and gender. What’s more, we found that there was high correlation between publication rate and clin, so we decided to drop publication rate. We selected model using the criterions-based procedures. What’s more we used residuals vs fitted values plot, quantile-quantile plot, scale-location plot and residuals vs leverage to diagnose model. We ended up with the linear regression model concluding dept, clin, cert, exper, gender, rank and the interaction term between gender and rank.
+
+We used Cook’s distance, quantile-quantile plot, and residuals plots to find whether there were any outliers that would impact our model significantly. And we found that the 184th observation might be an influential point, however, given the purpose of this analyses, we decided to keep this point.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(multcomp)
+library(faraway)
+
+library(patchwork)
+library(leaps)
+library(caret)
+library(glmnet)
+library(patchwork)
+library(broom)
+library(modelr)
+library(olsrr)
+library(arsenal)
+
+
+my_controls = tableby.control(
+total = TRUE,
+test = FALSE,
+numeric.stats = c("meansd", "medianq1q3"), cat.stats = c("countpct"),
+stats.labels = list(
+meansd = "Mean (SD)", medianq1q3 = "Median (Q1, Q3)", countpct = "N (%)"),
+digits = 2)
+```
+
+```{r include=FALSE}
+data = read_csv("./data/Lawsuit.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(dept=as.factor(dept),
+         dept= recode(dept, "1"="Biochemistry/Molecular Biology", "2"="Physiology", 
+             "3"="Genetics", "4"="Pediatrics", "5"="Medicine", "6"="Surgery"),
+         gender=as.factor(gender),
+         gender=recode(gender,"1"="Males","0"="Females"),
+         clin=as.factor(clin),
+         clin=recode(clin, "1"="Primarily clinical emphasis", "0"="Primarily research emphasis"),
+         cert= as.factor(cert),
+         cert= recode(cert, "1"="Board Certified", "0"="Not Certified"),
+         rank=as.factor(rank),
+         rank=recode(rank, "1"="Assistant", "2"="Associate", "3"="Full professor")
+         )
+```
+
+
+```{r echo = FALSE}
+tab1 = tableby(gender ~ dept + clin + cert + prate + exper + rank + sal94 + sal95,
+               data = data,
+               total = TRUE,
+               control = my_controls
+               )
+
+summary(tab1, title = "Descriptive Statistics", text=T) %>% 
+  knitr::kable()
+```
+
+```{r include=FALSE}
+data = data %>% 
+  mutate(mean_sal = (sal94+sal95)/2,
+         log_mean_sal = log(mean_sal))
+```
+
+```{r echo=FALSE, error = FALSE}
+dis_sal = data %>% 
+  ggplot(aes(x = mean_sal)) + 
+  geom_histogram()
+
+dis_log_sal = data %>% 
+  ggplot(aes(x = log_mean_sal)) + 
+  geom_histogram()
+
+dis_sal + dis_log_sal
+```
+
+## Final model
+
+```{r }
+final_model= lm(log_mean_sal ~ dept + clin + cert + exper + gender*rank, data = data)
+summary(final_model)
+
+par(mfrow=c(2,2))
+plot(final_model)
+```
+
+## Outliers and influ.point
+```{r include = FALSE}
+influ.point <- influence.measures(final_model)
+summary(influ.point) %>% knitr::kable()
+```
+Observation 184 is identified with high DFFITS value so it affects the observation 184 fitted value. On the diagnostic plot, case 184 appears problematic on each plot. Therefore, we try to remove this point and do analysis again.
+
+```{r}
+remove_184 = data[-c(184),]
+remove.mod = lm(log_mean_sal ~ dept + clin + cert + exper + gender*rank, data=remove_184)
+summary(remove.mod)
+par(mfrow=c(2,2))
+plot(remove.mod)
+```
+
+
+
+
+

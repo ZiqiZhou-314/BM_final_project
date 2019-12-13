@@ -148,7 +148,7 @@ summary(influ.point95) %>% knitr::kable()
 
 
 # Separate the male and female.
-
+(wrong and not using this)
 ```{r}
 female = data %>% 
   filter(gender == 0)

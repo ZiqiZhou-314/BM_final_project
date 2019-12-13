@@ -1,0 +1,78 @@
+---
+title: "Ziqi_draft_2"
+author: "Ziqi Zhou"
+date: "12/10/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(multcomp)
+library(faraway)
+
+library(patchwork)
+library(leaps)
+library(caret)
+library(glmnet)
+library(patchwork)
+library(broom)
+library(modelr)
+library(olsrr)
+library(arsenal)
+
+
+my_controls = tableby.control(
+total = TRUE,
+test = FALSE,
+numeric.stats = c("meansd", "medianq1q3"), cat.stats = c("countpct"),
+stats.labels = list(
+meansd = "Mean (SD)", medianq1q3 = "Median (Q1, Q3)", countpct = "N (%)"),
+digits = 2)
+```
+
+## Read and clean the data
+
+```{r}
+data = read_csv("./data/Lawsuit.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(dept = as.factor(dept),
+         gender = as.factor(gender),
+         clin = as.factor(clin),
+         cert = as.factor(cert),
+         rank = as.factor(rank)) 
+
+sum(is.na(data))
+```
+
+There is no missing value in this dataset.
+
+
+
+
+```{r}
+tab1 = tableby(gender ~ dept + clin + cert + prate + exper + rank + sal94 + sal95,
+               data = data,
+               total = TRUE,
+               control = my_controls
+               )
+
+summary(tab1, title = "Descriptive Statistics", text=T) %>% 
+  knitr::kable()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
