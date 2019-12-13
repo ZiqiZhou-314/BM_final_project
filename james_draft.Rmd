@@ -1,0 +1,239 @@
+---
+title: "Untitled"
+author: "James Ng"
+date: "12/10/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(multcomp)
+library(faraway)
+
+library(patchwork)
+library(leaps)
+library(caret)
+library(glmnet)
+library(patchwork)
+library(broom)
+library(modelr)
+library(olsrr)
+library(arsenal)
+
+
+
+my_controls = tableby.control(
+total = TRUE,
+test = FALSE,
+numeric.stats = c("meansd", "medianq1q3"), cat.stats = c("countpct"),
+stats.labels = list(
+meansd = "Mean (SD)", medianq1q3 = "Median (Q1, Q3)", countpct = "N (%)"),
+digits = 2)
+```
+
+## Read and clean the data
+
+```{r}
+data = read_csv("./data/Lawsuit.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(dept = as.factor(dept),
+         gender = as.factor(gender),
+         clin = as.factor(clin),
+         cert = as.factor(cert),
+         rank = as.factor(rank)) 
+sum(is.na(data))
+```
+There is no missing value in this dataset.
+**waiting for recode after analysis**
+
+```{r}
+class(data$dept)
+```
+
+```{r}
+tab1 = tableby(gender ~ dept + clin + cert + prate + exper + rank + sal94 + sal95,
+               data = data,
+               total = TRUE,
+               control = my_controls
+               )
+
+summary(tab1, title = "Descriptive Statistics", text=T) %>% 
+  knitr::kable()
+
+```
+
+## Exploratory about the distribution of outcome
+```{r}
+data %>% 
+  ggplot(aes(x = sal94)) + 
+  geom_histogram()
+
+data %>% 
+  ggplot(aes(x = log(sal94))) + 
+  geom_histogram()
+
+data %>% 
+  ggplot(aes(x = sal95)) + 
+  geom_histogram()
+
+data %>% 
+  ggplot(aes(x = log(sal95))) + 
+  geom_histogram()
+```
+
+```{r}
+data = data %>% 
+  mutate(log_sal94 = log(sal94),
+         log_sal95 = log(sal95))
+```
+We could see that the sal94 and sal 95 are obviously right skewed, so we choose log transformation.
+
+
+## fit the model
+
+
+```{r}
+data94 = data %>% 
+  dplyr::select(-sal94, -sal95, -log_sal95,-id) %>% 
+  dplyr::select(log_sal94, everything())
+
+data95 = data %>% 
+  dplyr::select(-sal94, -sal95, -log_sal94,-id) %>% 
+  dplyr::select(log_sal95, everything())
+
+
+pairs(data94)
+pairs(data95)
+```
+We use the stepwise regression.
+```{r}
+mult.fit <- lm(log_sal94 ~ . , data=data94)
+step(mult.fit, direction='backward')
+step(mult.fit, direction = 'both') 
+```
+
+```{r}
+model94 = lm(log_sal94 ~ dept + clin + cert + exper + rank + prate,data = data94)
+summary(model94)
+anova(model94)
+plot(model94)
+
+influ.point94 <- influence.measures(model94)
+summary(influ.point94) %>% knitr::kable()
+
+model94_1 = lm(log_sal94 ~ dept + clin + cert + exper + rank +  gender + prate,data = data94) 
+anova(model94_1)
+plot(model94_1)
+```
+
+```{r}
+multi.fit95 = lm(log_sal95 ~ . , data=data95)
+step(multi.fit95, direction = 'both')
+```
+
+```{r}
+model95 = lm(log_sal95 ~  dept + gender + clin + cert + exper + 
+    rank, data = data95) 
+tidy(model95)
+anova(model95)
+plot(model95)
+vif(model95)
+
+influ.point95 <- influence.measures(model95)
+summary(influ.point95) %>% knitr::kable()
+```
+
+```{r}
+model95 = lm(log_sal95 ~  gender + dept + clin + cert + exper + 
+    rank, data = data95) 
+tidy(model95)
+anova(model95)
+plot(model95)
+vif(model95)
+
+influ.point95 <- influence.measures(model95)
+summary(influ.point95) %>% knitr::kable()
+```
+
+```{r}
+
+dept_gen = lm(log_sal95 ~ gender * dept, data = data95)
+summary(dept_gen)
+
+gen_only = lm(log_sal95 ~ dept, data = data95)
+summary(gen_only)
+
+
+```
+
+```{r}
+model95 = lm(log_sal95 ~  (dept + clin + cert + exper + 
+    rank)*gender, data = data95) 
+tidy(model95)
+anova(model95)
+plot(model95)
+vif(model95)
+
+influ.point95 <- influence.measures(model95)
+summary(influ.point95) %>% knitr::kable()
+```
+
+```{r}
+model95 = lm(log_sal95 ~ (.), data = data95) 
+summary(model95)
+
+mult.fit <- lm(log_sal95 ~ . , data=data95)
+step(mult.fit, direction='backward')
+```
+
+```{r}
+data95_mod = as.matrix(data95)
+```
+
+```{r}
+leaps(x = data95_mod[,2:8], y = data95_mod[,1], nbest=2, method="cp")
+```
+
+```{r}
+b<-regsubsets(log_sal95 ~ (.-gender), data=data95)
+   (rs<-summary(b))
+
+# Plots of Cp and Adj-R2 as functions of parameters
+par(mar=c(4,4,1,1))
+par(mfrow=c(1,2))
+
+plot(1:8, rs$cp, xlab="No of parameters", ylab="Cp Statistic")
+abline(0,1)
+
+plot(1:8, rs$adjr2, xlab="No of parameters", ylab="Adj R2")
+
+```
+
+```{r}
+data95_mod=as.matrix(data95)
+leaps(x = data95[,2:8], y = data95[,1], nbest=2, method="Cp")
+
+leaps(x = surg[,1:8], y = surg[,9], nbest=2, method="adjr2")
+
+multi.fit7 <- lm(log_sal95 ~ .-gender, data=data95)
+AIC(multi.fit7)
+
+AIC(multi.fit7, k = log(length(data_95)))
+
+```
+
+```{r}
+
+model95 = lm(log_sal95 ~.-gender-prate, data = data95) 
+summary(model95)
+
+model95 = lm(log_sal95 ~(.-gender-prate)*gender, data = data95) 
+summary(model95)
+
+```
+
+```{r}
+cor(as.numeric(data95_mod))
+```
+

@@ -784,12 +784,15 @@ summary(f2)
     ## Multiple R-squared:  0.9358, Adjusted R-squared:  0.9321 
     ## F-statistic: 256.1 on 14 and 246 DF,  p-value: < 2.2e-16
 
+Residual plots for 1995
+
 ``` r
 par(mfrow=c(2,2))
 plot(f2)
 ```
 
 ![](jennifer-draft_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
 Average Salary of 1994 and 1995
 
 ``` r
@@ -1105,8 +1108,8 @@ summary(f3);
     ## Multiple R-squared:  0.936,  Adjusted R-squared:  0.9324 
     ## F-statistic:   257 on 14 and 246 DF,  p-value: < 2.2e-16
 
-MULTICOLLINEARITY suspect multicolinearity of publication
-    rate
+MULTICOLLINEARITY suspect multicolinearity of publication rate (based on
+literature and background research)
 
 ``` r
 cor(Lawsuit)
@@ -1135,7 +1138,7 @@ cor(Lawsuit)
     ## Sal94   0.31980432  0.23091858  1.0000000  0.9992553
     ## Sal95   0.31893443  0.22928853  0.9992553  1.0000000
 
-high correlation between Publication rate and clin
+high correlation between Prate-clin and prate-dept
 
 \#can also check VIF should drop prate variable
 
