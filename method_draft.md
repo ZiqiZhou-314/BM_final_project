@@ -30,19 +30,20 @@ cert, prate and exper were all confounders, therefore they were all
 included in the model and adjusted for. Correlation of the variables
 were looked to address any multicollinearity between the variables. It
 was observed that there was a high correlation between publication rate
-and clin, therefore publication rate was dropped from the model. We
-selected model using the criterion-based procedures. Residuals vs fitted
-values plot, quantile-quantile plot, scale-location plot, and residuals
-vs leverage were used to diagnose model. The final linear regression
-model concluded gender, dept, clin, cert, exper, and rank.
+and clin and publication rate and department, therefore publication rate
+was dropped from the model. We selected model using the criterion-based
+procedures. Residuals vs fitted values plot, quantile-quantile plot,
+scale-location plot, and residuals vs leverage were used to diagnose
+model. The final linear regression model concluded gender, dept, clin,
+cert, exper, and rank.
 
 Cook’s distance, quantile-quantile plot, and residuals plots were used
 to determine any outliers and influential points that would impact our
 model significantly. It was observed that observation 184 was an
 influential point, however, given the purpose of this analysis, we
-decided to keep this observation. An ANOVA test conducted at the end on
-our final regression model to assess the association between gender and
-salary adjusting for all other
+decided to keep this observation. A Global ANOVA test conducted at the
+end on our final regression model to assess the overall association
+between gender and salary adjusting for all other
 variables.
 
 |                                   | Females (N=106)                 | Males (N=155)                    | Total (N=261)                   |
