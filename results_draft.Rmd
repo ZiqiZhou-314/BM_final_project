@@ -1,0 +1,142 @@
+---
+title: "Results_draft"
+author: "James Ng"
+date: "12/13/2019"
+output: word_document
+---
+
+# Methods
+
+The dataset contains 7 factors that are potentially associated with the salaries of the Houston College of Medicine faculty. These are department, gender, primary emphasis (clinical or research), certification (board certified or not certified), publication rate (publications on CV/ years between CV date and MD date), years since obtaining MD and rank. The mean salary for the 1994 academic year and the salary for the 1995 academic year (salary after increment to the 1994 income) are the outcomes. Histograms were were made to visualize the distribution of the outcomes. The histograms show right skewness so log transformations of the outcomes were carried out (supplemental - ###). Since gender was the main variable of interest, models were analyzed in R studio (citation - ###) to test for associations between gender and salary.
+  A simple linear regression model was developed using mean salaries for the 2 years provided and gender. Using this model as the reference point, other variables in the dataset were analyzed as potential confounders or interactions. Model selection was made using criterion-based procedures. Once the final model was determined, residuals vs fitted values plot, quantile-quantile plot, scale-location plot and residuals vs leverage plots were used to diagnose the model (supplemental - ###) and anova was used to determine significance.
+
+# Results
+
+Several of the other variables (department, primary emphasis, certification, publication rate and experience) were determined to be confounders, while rank was found to be an interaction. High collinearity was found between publication rate and primary emphasis, so publication rate was dropped from the model. The final model (supplemental table ###) shows that gender is not significant in determining salary (p-value 0.186) when controlling for department, primary emphasis, certification, experience and rank. Associated p values for other variables are also provided. The model shows an adjusted $R^2$ value of .9322, meaning that 93% of the variability of the data is represented by the model. Cook’s distance, quantile-quantile plot, and residuals plots show that the 184th observation is an influential point (supplemental Figure ###, supplemental table ###). The influencial point was kept in the model since the goal was to build a model for association.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(multcomp)
+library(faraway)
+
+library(patchwork)
+library(leaps)
+library(caret)
+library(glmnet)
+library(patchwork)
+library(broom)
+library(modelr)
+library(olsrr)
+library(arsenal)
+
+
+my_controls = tableby.control(
+total = TRUE,
+test = FALSE,
+numeric.stats = c("meansd", "medianq1q3"), cat.stats = c("countpct"),
+stats.labels = list(
+meansd = "Mean (SD)", medianq1q3 = "Median (Q1, Q3)", countpct = "N (%)"),
+digits = 2)
+```
+
+```{r include=FALSE}
+data = read_csv("./data/Lawsuit.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(dept=as.factor(dept),
+         dept= recode(dept, "1"="Biochemistry/Molecular Biology", "2"="Physiology", 
+             "3"="Genetics", "4"="Pediatrics", "5"="Medicine", "6"="Surgery"),
+         gender=as.factor(gender),
+         gender=recode(gender,"1"="Males","0"="Females"),
+         clin=as.factor(clin),
+         clin=recode(clin, "1"="Primarily clinical emphasis", "0"="Primarily research emphasis"),
+         cert= as.factor(cert),
+         cert= recode(cert, "1"="Board Certified", "0"="Not Certified"),
+         rank=as.factor(rank),
+         rank=recode(rank, "1"="Assistant", "2"="Associate", "3"="Full professor")
+         )
+```
+
+
+```{r echo = FALSE}
+tab1 = tableby(gender ~ dept + clin + cert + prate + exper + rank + sal94 + sal95,
+               data = data,
+               total = TRUE,
+               control = my_controls
+               )
+
+summary(tab1, title = "Descriptive Statistics", text=T) %>% 
+  knitr::kable()
+```
+
+```{r include=FALSE}
+data = data %>% 
+  mutate(mean_sal = (sal94+sal95)/2,
+         log_mean_sal = log(mean_sal))
+```
+
+```{r echo=FALSE, error = FALSE}
+dis_sal = data %>% 
+  ggplot(aes(x = mean_sal)) + 
+  geom_histogram()
+
+dis_log_sal = data %>% 
+  ggplot(aes(x = log_mean_sal)) + 
+  geom_histogram()
+
+dis_sal + dis_log_sal
+```
+
+## Final model
+
+```{r }
+final_model= lm(log_mean_sal ~ dept + clin + cert + exper + rank*gender, data = data)
+summary(final_model)
+
+anova(final_model)
+
+par(mfrow=c(2,2))
+plot(final_model)
+```
+
+## Outliers and influ.point
+```{r include = FALSE}
+influ.point <- influence.measures(final_model)
+summary(influ.point) %>% knitr::kable()
+```
+Observation 184 is identified with high DFFITS value so it affects the observation 184 fitted value. On the diagnostic plot, case 184 appears problematic on each plot. Therefore, we try to remove this point and do analysis again.
+
+```{r}
+remove_184 = data[-c(184),]
+remove.mod = lm(log_mean_sal ~ dept + clin + cert + exper + gender*rank, data=remove_184)
+summary(remove.mod)
+par(mfrow=c(2,2))
+plot(remove.mod)
+```
+
+
+
+
+### stratified if needed.
+```{r}
+data_rank_3 = data %>% 
+  filter(rank == "Full professor")
+data_rank_2 = data %>% 
+  filter(rank == "Associate")
+data_rank_1 = data %>% 
+  filter(rank == "Assistant")
+
+final_model_3 = lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = data_rank_3)
+summary(final_model_3)
+
+final_model_2 = lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = data_rank_2)
+summary(final_model_2)
+
+final_model_1= lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = data_rank_1)
+summary(final_model_1)
+```
+
+
+
+

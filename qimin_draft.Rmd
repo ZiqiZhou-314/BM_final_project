@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readxl)
 library(dplyr)
+library(caret)
+library(olsrr)
 ```
 
 ```{r message=FALSE, warning=FALSE}
@@ -164,9 +166,117 @@ lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*exper,
   summary()
 ```
 
+# After Cody's office hour
 
 ```{r}
-lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*exper, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+lm(log(sal_average) ~ gender, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
   summary()
+
+lm(log(sal_average) ~ gender + dept, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+So department is a confounder of the association between salary and gender.
+
+```{r}
+lm(log(sal_average) ~ gender + clin, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+So clin is a confounder of the association between salary and gender.
+
+```{r}
+lm(log(sal_average) ~ gender + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+So cert is a confounder of the association between salary and gender.
+
+```{r}
+lm(log(sal_average) ~ gender + prate, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+So prate is a confounder of the association between salary and gender.
+
+```{r}
+lm(log(sal_average) ~ gender + exper, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+So experience is a confounder of the association between salary and gender.
+
+```{r}
+lm(log(sal_average) ~ gender + rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+So rank is (nearly) a confounder of the association between salary and gender.
+
+
+```{r}
+lm(log(sal_average) ~ gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+Rank is a effect measure modifier between gender and salary.
+
+```{r}
+lm(log(sal_average) ~ gender + dept + exper + clin + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+```{r message=FALSE, warning=FALSE}
+which(lm(log(sal_average) ~ gender + dept + exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  cooks.distance() > 0.5 | lm(log(sal_average) ~ gender + dept + exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  cooks.distance() > 4/nrow(data))
+```
+
+```{r}
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + clin + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+```{r}
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+```{r}
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + clin + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+```{r}
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+```{r}
+fit = lm(log(sal_average) ~ gender + dept + exper + clin + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95))
+model <- lm(mpg ~ disp + hp + wt + qsec, data = mtcars)
+ols_plot_cooksd_bar(model)
+```
+
+```{r}
+lm(log(sal_average) ~ gender*rank + dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  anova(lm(log(sal_average) ~ dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)))
+```
+
+```{r}
+lm(log(sal_average) ~ gender, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  anova(lm(log(sal_average) ~ dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)))
 ```
 

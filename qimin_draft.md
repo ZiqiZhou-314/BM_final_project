@@ -674,39 +674,424 @@ lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*exper,
     ## Multiple R-squared:  0.9366, Adjusted R-squared:  0.9336 
     ## F-statistic: 305.4 on 12 and 248 DF,  p-value: < 2.2e-16
 
+# After Cody’s office hour
+
 ``` r
-lm(log(sal_average) ~ dept + clin + cert + exper + rank + gender + gender*exper, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+lm(log(sal_average) ~ gender, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
   summary()
 ```
 
     ## 
     ## Call:
-    ## lm(formula = log(sal_average) ~ dept + clin + cert + exper + 
-    ##     rank + gender + gender * exper, data = data %>% mutate(sal_average = (sal94 + 
+    ## lm(formula = log(sal_average) ~ gender, data = data %>% mutate(sal_average = (sal94 + 
+    ##     sal95)/2) %>% dplyr::select(-sal94, -sal95))
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.1255 -0.3659 -0.0078  0.3342  1.0549 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 11.63319    0.04595 253.162  < 2e-16 ***
+    ## gender1      0.38530    0.05963   6.462  5.1e-10 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.4731 on 259 degrees of freedom
+    ## Multiple R-squared:  0.1388, Adjusted R-squared:  0.1355 
+    ## F-statistic: 41.75 on 1 and 259 DF,  p-value: 5.103e-10
+
+``` r
+lm(log(sal_average) ~ gender + dept, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log(sal_average) ~ gender + dept, data = data %>% 
+    ##     mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, 
+    ##     -sal95))
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.70544 -0.19433 -0.02501  0.16341  0.60779 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 11.34504    0.04110 276.036  < 2e-16 ***
+    ## gender1      0.20521    0.03355   6.116 3.60e-09 ***
+    ## dept2       -0.13194    0.05385  -2.450  0.01496 *  
+    ## dept3        0.20092    0.06602   3.044  0.00258 ** 
+    ## dept4        0.30535    0.05919   5.158 5.02e-07 ***
+    ## dept5        0.64943    0.04569  14.215  < 2e-16 ***
+    ## dept6        1.07668    0.05453  19.743  < 2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.2534 on 254 degrees of freedom
+    ## Multiple R-squared:  0.7578, Adjusted R-squared:  0.752 
+    ## F-statistic: 132.4 on 6 and 254 DF,  p-value: < 2.2e-16
+
+So department is a confounder of the association between salary and
+gender.
+
+``` r
+lm(log(sal_average) ~ gender + clin, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log(sal_average) ~ gender + clin, data = data %>% 
+    ##     mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, 
+    ##     -sal95))
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.00911 -0.25023 -0.01895  0.24564  0.99426 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 11.28894    0.04470 252.526  < 2e-16 ***
+    ## gender1      0.33718    0.04671   7.218 5.89e-12 ***
+    ## clin1        0.60819    0.04710  12.912  < 2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.3694 on 258 degrees of freedom
+    ## Multiple R-squared:  0.4769, Adjusted R-squared:  0.4728 
+    ## F-statistic: 117.6 on 2 and 258 DF,  p-value: < 2.2e-16
+
+So clin is a confounder of the association between salary and
+gender.
+
+``` r
+lm(log(sal_average) ~ gender + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log(sal_average) ~ gender + cert, data = data %>% 
+    ##     mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, 
+    ##     -sal95))
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.11866 -0.27669 -0.01921  0.31081  1.01942 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 11.28992    0.05510 204.888  < 2e-16 ***
+    ## gender1      0.33285    0.05233   6.360 9.11e-10 ***
+    ## cert1        0.51981    0.05726   9.078  < 2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.4127 on 258 degrees of freedom
+    ## Multiple R-squared:  0.3473, Adjusted R-squared:  0.3423 
+    ## F-statistic: 68.65 on 2 and 258 DF,  p-value: < 2.2e-16
+
+So cert is a confounder of the association between salary and
+gender.
+
+``` r
+lm(log(sal_average) ~ gender + prate, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log(sal_average) ~ gender + prate, data = data %>% 
+    ##     mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, 
+    ##     -sal95))
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.8027 -0.1953  0.0039  0.1925  0.7354 
+    ## 
+    ## Coefficients:
+    ##              Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 12.648300   0.060244 209.951  < 2e-16 ***
+    ## gender1      0.251814   0.038823   6.486 4.46e-10 ***
+    ## prate       -0.189739   0.009824 -19.313  < 2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.3031 on 258 degrees of freedom
+    ## Multiple R-squared:  0.6479, Adjusted R-squared:  0.6452 
+    ## F-statistic: 237.4 on 2 and 258 DF,  p-value: < 2.2e-16
+
+So prate is a confounder of the association between salary and
+gender.
+
+``` r
+lm(log(sal_average) ~ gender + exper, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log(sal_average) ~ gender + exper, data = data %>% 
+    ##     mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, 
+    ##     -sal95))
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.03299 -0.37372  0.04036  0.33276  1.02947 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 11.50693    0.05839 197.079  < 2e-16 ***
+    ## gender1      0.30755    0.06277   4.900  1.7e-06 ***
+    ## exper        0.01686    0.00496   3.399 0.000784 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.4637 on 258 degrees of freedom
+    ## Multiple R-squared:  0.1757, Adjusted R-squared:  0.1693 
+    ## F-statistic:  27.5 on 2 and 258 DF,  p-value: 1.488e-11
+
+So experience is a confounder of the association between salary and
+gender.
+
+``` r
+lm(log(sal_average) ~ gender + rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log(sal_average) ~ gender + rank, data = data %>% 
+    ##     mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, 
+    ##     -sal95))
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.10798 -0.37872  0.01491  0.35397  1.03532 
+    ## 
+    ## Coefficients:
+    ##              Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) 11.615638   0.050964 227.919  < 2e-16 ***
+    ## gender1      0.349481   0.064420   5.425 1.34e-07 ***
+    ## rank2       -0.005225   0.076187  -0.069   0.9454    
+    ## rank3        0.123166   0.073223   1.682   0.0938 .  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.4716 on 257 degrees of freedom
+    ## Multiple R-squared:  0.151,  Adjusted R-squared:  0.1411 
+    ## F-statistic: 15.23 on 3 and 257 DF,  p-value: 3.747e-09
+
+So rank is (nearly) a confounder of the association between salary and
+gender.
+
+``` r
+lm(log(sal_average) ~ gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log(sal_average) ~ gender * rank, data = data %>% 
+    ##     mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, 
+    ##     -sal95))
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.04274 -0.37104  0.01751  0.35145  0.96675 
+    ## 
+    ## Coefficients:
+    ##               Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)   11.55040    0.05617 205.621  < 2e-16 ***
+    ## gender1        0.51942    0.09066   5.729 2.83e-08 ***
+    ## rank2          0.12859    0.11629   1.106  0.26985    
+    ## rank3          0.37976    0.12947   2.933  0.00366 ** 
+    ## gender1:rank2 -0.27200    0.15379  -1.769  0.07814 .  
+    ## gender1:rank3 -0.40566    0.15806  -2.567  0.01084 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.4666 on 255 degrees of freedom
+    ## Multiple R-squared:  0.1752, Adjusted R-squared:  0.1591 
+    ## F-statistic: 10.84 on 5 and 255 DF,  p-value: 1.829e-09
+
+Rank is a effect measure modifier between gender and
+salary.
+
+``` r
+lm(log(sal_average) ~ gender + dept + exper + clin + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  summary()
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log(sal_average) ~ gender + dept + exper + clin + 
+    ##     cert + gender * rank, data = data %>% mutate(sal_average = (sal94 + 
     ##     sal95)/2) %>% dplyr::select(-sal94, -sal95))
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -0.32130 -0.07860 -0.00987  0.07100  0.86910 
+    ## -0.32667 -0.08080 -0.01075  0.07646  0.86686 
     ## 
     ## Coefficients:
     ##                Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)   10.903325   0.034805 313.272  < 2e-16 ***
-    ## dept2         -0.165069   0.028755  -5.741 2.75e-08 ***
-    ## dept3          0.189770   0.035827   5.297 2.60e-07 ***
-    ## dept4          0.218603   0.035342   6.185 2.54e-09 ***
-    ## dept5          0.546771   0.029045  18.825  < 2e-16 ***
-    ## dept6          0.939830   0.034907  26.924  < 2e-16 ***
-    ## clin1          0.208175   0.021470   9.696  < 2e-16 ***
-    ## cert1          0.182166   0.020969   8.688 5.09e-16 ***
-    ## exper          0.027774   0.003545   7.834 1.38e-13 ***
-    ## rank2          0.118231   0.023648   5.000 1.09e-06 ***
-    ## rank3          0.208036   0.026112   7.967 5.90e-14 ***
-    ## gender1        0.128932   0.036912   3.493 0.000566 ***
-    ## exper:gender1 -0.011728   0.003580  -3.276 0.001204 ** 
+    ## (Intercept)   10.959335   0.027936 392.307  < 2e-16 ***
+    ## gender1        0.074479   0.027568   2.702  0.00738 ** 
+    ## dept2         -0.175544   0.028871  -6.080 4.53e-09 ***
+    ## dept3          0.184572   0.036206   5.098 6.84e-07 ***
+    ## dept4          0.208468   0.035528   5.868 1.41e-08 ***
+    ## dept5          0.543204   0.029364  18.499  < 2e-16 ***
+    ## dept6          0.931388   0.035267  26.409  < 2e-16 ***
+    ## exper          0.018171   0.001806  10.064  < 2e-16 ***
+    ## clin1          0.197031   0.022175   8.885  < 2e-16 ***
+    ## cert1          0.191213   0.021363   8.951  < 2e-16 ***
+    ## rank2          0.173142   0.033904   5.107 6.55e-07 ***
+    ## rank3          0.282281   0.039594   7.129 1.11e-11 ***
+    ## gender1:rank2 -0.082943   0.044750  -1.853  0.06501 .  
+    ## gender1:rank3 -0.105271   0.046654  -2.256  0.02492 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.1312 on 248 degrees of freedom
-    ## Multiple R-squared:  0.9366, Adjusted R-squared:  0.9336 
-    ## F-statistic: 305.4 on 12 and 248 DF,  p-value: < 2.2e-16
+    ## Residual standard error: 0.1325 on 247 degrees of freedom
+    ## Multiple R-squared:  0.9355, Adjusted R-squared:  0.9322 
+    ## F-statistic: 275.8 on 13 and 247 DF,  p-value: < 2.2e-16
+
+``` r
+which(lm(log(sal_average) ~ gender + dept + exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  cooks.distance() > 0.5 | lm(log(sal_average) ~ gender + dept + exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  cooks.distance() > 4/nrow(data))
+```
+
+    ##   8  19  47  59  75  82  83  88  95  96  97 102 137 176 184 216 252 
+    ##   8  19  47  59  75  82  83  88  95  96  97 102 137 176 184 216 252
+
+``` r
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + clin + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+    ## Linear Regression 
+    ## 
+    ## 261 samples
+    ##   6 predictor
+    ## 
+    ## No pre-processing
+    ## Resampling: Cross-Validated (10 fold) 
+    ## Summary of sample sizes: 237, 236, 236, 235, 235, 234, ... 
+    ## Resampling results:
+    ## 
+    ##   RMSE       Rsquared   MAE      
+    ##   0.1334369  0.9267757  0.1022599
+    ## 
+    ## Tuning parameter 'intercept' was held constant at a value of TRUE
+
+``` r
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+    ## Linear Regression 
+    ## 
+    ## 261 samples
+    ##   5 predictor
+    ## 
+    ## No pre-processing
+    ## Resampling: Cross-Validated (10 fold) 
+    ## Summary of sample sizes: 237, 236, 236, 235, 235, 234, ... 
+    ## Resampling results:
+    ## 
+    ##   RMSE       Rsquared   MAE      
+    ##   0.1541224  0.9058015  0.1222044
+    ## 
+    ## Tuning parameter 'intercept' was held constant at a value of TRUE
+
+``` r
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + clin + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+    ## Linear Regression 
+    ## 
+    ## 261 samples
+    ##   5 predictor
+    ## 
+    ## No pre-processing
+    ## Resampling: Cross-Validated (10 fold) 
+    ## Summary of sample sizes: 237, 236, 236, 235, 235, 234, ... 
+    ## Resampling results:
+    ## 
+    ##   RMSE       Rsquared   MAE      
+    ##   0.1556469  0.9063847  0.1220314
+    ## 
+    ## Tuning parameter 'intercept' was held constant at a value of TRUE
+
+``` r
+set.seed(1)
+train(log(sal_average) ~ gender + dept + exper + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95),
+                   trControl=trainControl(method="cv", number= 10),
+                   method='lm',
+                   na.action=na.pass)
+```
+
+    ## Linear Regression 
+    ## 
+    ## 261 samples
+    ##   4 predictor
+    ## 
+    ## No pre-processing
+    ## Resampling: Cross-Validated (10 fold) 
+    ## Summary of sample sizes: 237, 236, 236, 235, 235, 234, ... 
+    ## Resampling results:
+    ## 
+    ##   RMSE       Rsquared   MAE      
+    ##   0.1786626  0.8784191  0.1427226
+    ## 
+    ## Tuning parameter 'intercept' was held constant at a value of TRUE
+
+``` r
+fit = lm(log(sal_average) ~ gender + dept + exper + clin + cert + gender*rank, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95))
+model <- lm(mpg ~ disp + hp + wt + qsec, data = mtcars)
+ols_plot_cooksd_bar(model)
+```
+
+![](qimin_draft_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+
+``` r
+lm(log(sal_average) ~ gender*rank + dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  anova(lm(log(sal_average) ~ dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)))
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Model 1: log(sal_average) ~ gender * rank + dept + exper + clin + cert
+    ## Model 2: log(sal_average) ~ dept + exper + clin + cert
+    ##   Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
+    ## 1    247 4.3389                                  
+    ## 2    252 5.9884 -5   -1.6496 18.781 8.167e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+lm(log(sal_average) ~ gender, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  anova(lm(log(sal_average) ~ dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)))
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Model 1: log(sal_average) ~ gender
+    ## Model 2: log(sal_average) ~ dept + exper + clin + cert
+    ##   Res.Df    RSS Df Sum of Sq     F    Pr(>F)    
+    ## 1    259 57.971                                 
+    ## 2    252  5.988  7    51.982 312.5 < 2.2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
