@@ -160,7 +160,7 @@ should drop prate variable
 
 ******* final model *********** 
 ```{r}
-f4= lm(log.mean~dept+clin+cert+Exper+gender*rank)
+f4= lm(log.mean~dept+clin+cert+Exper+rank*gender)
 summary(f4)
 
 par(mfrow=c(2,2))
