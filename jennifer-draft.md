@@ -1109,8 +1109,12 @@ summary(f3);
     ## F-statistic:   257 on 14 and 246 DF,  p-value: < 2.2e-16
 
 MULTICOLLINEARITY suspect multicolinearity of publication rate (based on
+<<<<<<< HEAD
 literature and background
     research)
+=======
+literature and background research)
+>>>>>>> 5cec2eb1f42abcf2faa69f2c04a144b06385c576
 
 ``` r
 cor(Lawsuit)
