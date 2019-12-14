@@ -1,0 +1,206 @@
+---
+title: "jennifer-draft"
+author: "Jennifer Tang"
+date: "12/10/2019"
+output: github_document
+---
+
+Libraries
+```{r}
+library(arsenal)
+library(dplyr)
+library(HH)
+```
+
+Importing data
+```{r}
+library(readr)
+Lawsuit <- read_csv("data/Lawsuit.csv")
+View(Lawsuit)
+attach(Lawsuit)
+```
+
+Descriptive Statistics
+```{r}
+dept=as.factor(Lawsuit$Dept)
+dept= recode(dept, "1"="Biochemistry/Molecular Biology", "2"="Physiology", 
+             "3"="Genetics", "4"="Pediatrics", "5"="Medicine", "6"="Surgery")
+gender=as.factor(Lawsuit$Gender)
+gender=recode(gender,"1"="Males","0"="Females")
+clin=as.factor(Lawsuit$Clin)
+clin=recode(clin, "1"="Primarily clinical emphasis", "0"="Primarily research emphasis")
+cert= as.factor(Lawsuit$Cert)
+cert= recode(cert, "1"="Board Certified", "0"="Not Certified")
+rank=as.factor(Lawsuit$Rank)
+rank=recode(rank, "1"="Assistant", "2"="Associate", "3"="Full professor")
+controls= tableby.control(test=FALSE, total=FALSE,
+                          numeric.stats=c("meansd", "medianq1q3"),
+                          stats.labels=list(meansd="Mean (SD)", medianq1q3="Median (IQR)"))
+tab1= tableby(gender~dept+clin+cert+Prate+Exper+rank+Sal94+Sal95, data=Lawsuit, test=FALSE, 
+              total=FALSE, control=controls, digits=2)
+summary(tab1, text=TRUE)
+
+```
+
+Distribution of Salary
+```{r}
+par(mfrow=c(2,2))
+hist(Sal94)
+hist(Sal95)
+trans.sal94=log(Sal94)
+trans.sal95= log(Sal95)
+hist(trans.sal94)
+hist(trans.sal95)
+
+```
+
+Looking at Salary in 1994
+``` {r}
+
+###  confounders
+mod94=lm(trans.sal94~gender); summary(mod94) 
+# gender-dept
+summary(lm(trans.sal94~gender+dept))
+# gender-clin
+summary(lm(trans.sal94~gender+clin))
+# gender-cert
+summary(lm(trans.sal94~gender+cert))
+# gender-Prate
+summary(lm(trans.sal94~gender+Prate))
+# gender-Exper
+summary(lm(trans.sal94~gender+Exper))
+# gender- rank
+summary(lm(trans.sal94~gender+rank))
+
+#### interactions: dept, experience, rank
+
+#gender-dept
+summary(lm(trans.sal94~gender*dept))
+# gender-experience 
+summary(lm(trans.sal94~gender*Exper))
+#gender-rank
+summary(lm(trans.sal94~gender*rank))
+f1=lm(trans.sal94~dept+clin+cert+Prate+Exper+rank*gender)
+summary(f1)
+
+```
+Residual plots for model 1994
+```{r}
+par(mfrow=c(2,2))
+plot(f1)
+```
+
+Looking at Salary in 1995
+```{r}
+mod95=lm(trans.sal95~gender);summary(mod95)
+
+# gender-dept
+summary(lm(trans.sal95~gender+dept))
+# gender-clin
+summary(lm(trans.sal95~gender+clin))
+# gender-certs
+summary(lm(trans.sal95~gender+cert))
+# gender-Prate
+summary(lm(trans.sal95~gender+Prate))
+# gender-Exper
+summary(lm(trans.sal95~gender+Exper))
+# gender- rank
+summary(lm(trans.sal95~gender+rank))
+# interaction of dept, exper, rank
+summary(lm(trans.sal95~gender*dept)) 
+summary(lm(trans.sal95~gender*Exper)) 
+summary(lm(trans.sal95~gender*rank)) 
+
+f2=lm(trans.sal95~dept+clin+cert+Prate+Exper+rank*gender)
+summary(f2)
+```
+
+Residual plots for 1995
+```{r}
+par(mfrow=c(2,2))
+plot(f2)
+```
+
+Average Salary of 1994 and 1995
+```{r}
+mean.salary=(Sal94+Sal95)/2
+hist(mean.salary)
+log.mean=log(mean.salary)
+hist(log.mean)
+
+mean.mod=lm(log.mean~gender); summary(mean.mod)
+# there is association between mean salary of 1994 and 1995 and gender
+
+#confounders
+summary(lm(log.mean~gender+dept)) # confounder
+summary(lm(log.mean~gender+clin)) # confounder
+summary(lm(log.mean~gender+cert)) # confounder
+summary(lm(log.mean~gender+Prate)) # confounder
+summary(lm(log.mean~gender+Exper)) # confounder
+summary(lm(log.mean~gender+rank)) # not a confounder
+
+#interactions
+summary(lm(log.mean~gender*dept)) # no interaction
+summary(lm(log.mean~gender*rank)) # interaction with full professor
+summary(lm(log.mean~gender*Exper)) # no interaction
+
+f3= lm(log.mean~dept+clin+cert+Prate+Exper+gender*rank)
+summary(f3);
+```
+ 
+MULTICOLLINEARITY
+suspect multicolinearity of publication rate (based on literature and background research)
+```{r}
+cor(Lawsuit)
+```
+high correlation between Prate-clin and prate-dept
+
+#can also check VIF
+should drop prate variable
+
+******* final model *********** 
+```{r}
+f4= lm(log.mean~dept+clin+cert+Exper+rank*gender)
+summary(f4)
+
+par(mfrow=c(2,2))
+plot(f4)
+```
+
+######### outliers and influence points
+```{r}
+rstandard(f4)
+```
+
+```{r}
+hat=hatvalues(f4); hat
+hat[hat>0.2]
+#named numeric(0)
+```
+
+```{r}
+
+# remove observation 184 from the mean salary
+remove_184=Lawsuit[-c(184),]
+log.mean184=(remove_184$Sal94+remove_184$Sal95)/2
+dept184=as.factor(remove_184$Dept)
+gender184=as.factor(remove_184$Gender)
+clin184=as.factor(remove_184$Clin)
+cert184= as.factor(remove_184$Cert)
+rank184=as.factor(remove_184$Rank)
+
+remove.mod=lm(log.mean184~dept184+clin184+cert184+
+                Exper+gender184*rank184, data=remove_184)
+summary(remove.mod)
+par(mfrow=c(2,2))
+plot(remove.mod)
+```
+There are no outliers for X and Y. Observation 184 is an influential point.
+We should keep the influential point in the model since removing data that doesn't necessarily fit the model isn't representative of the general population. Observation 184 is a male not board certified assistant professor who is in the 'Medicine' department. This individual does research primarily and has 2 years of experience with a publication rate of 5.
+
+
+```{r}
+anova(f4)
+```
+
+
