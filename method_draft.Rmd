@@ -140,3 +140,8 @@ summary(final_model_1)
 anova(final_model)
 ```
 
+```{r}
+gender = lm(log_mean_sal ~ dept + clin + cert + exper + rank*gender, data = data)
+anova(gender)
+```
+
