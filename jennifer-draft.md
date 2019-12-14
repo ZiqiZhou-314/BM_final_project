@@ -1109,7 +1109,12 @@ summary(f3);
     ## F-statistic:   257 on 14 and 246 DF,  p-value: < 2.2e-16
 
 MULTICOLLINEARITY suspect multicolinearity of publication rate (based on
+<<<<<<< HEAD
+literature and background
+    research)
+=======
 literature and background research)
+>>>>>>> 5cec2eb1f42abcf2faa69f2c04a144b06385c576
 
 ``` r
 cor(Lawsuit)
@@ -1145,14 +1150,13 @@ high correlation between Prate-clin and prate-dept
 \*\*\*\*\*\*\* final model \*\*\*\*\*\*\*\*\*\*\*
 
 ``` r
-f4= lm(log.mean~dept+clin+cert+Exper+gender*rank)
+f4= lm(log.mean~dept+clin+cert+Exper+rank*gender)
 summary(f4)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = log.mean ~ dept + clin + cert + Exper + gender * 
-    ##     rank)
+    ## lm(formula = log.mean ~ dept + clin + cert + Exper + rank * gender)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
@@ -1169,11 +1173,11 @@ summary(f4)
     ## clinPrimarily clinical emphasis  0.197031   0.022175   8.885  < 2e-16 ***
     ## certBoard Certified              0.191213   0.021363   8.951  < 2e-16 ***
     ## Exper                            0.018171   0.001806  10.064  < 2e-16 ***
-    ## genderMales                      0.074479   0.027568   2.702  0.00738 ** 
     ## rankAssociate                    0.173142   0.033904   5.107 6.55e-07 ***
     ## rankFull professor               0.282281   0.039594   7.129 1.11e-11 ***
-    ## genderMales:rankAssociate       -0.082943   0.044750  -1.853  0.06501 .  
-    ## genderMales:rankFull professor  -0.105271   0.046654  -2.256  0.02492 *  
+    ## genderMales                      0.074479   0.027568   2.702  0.00738 ** 
+    ## rankAssociate:genderMales       -0.082943   0.044750  -1.853  0.06501 .  
+    ## rankFull professor:genderMales  -0.105271   0.046654  -2.256  0.02492 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -1434,3 +1438,22 @@ general population. Observation 184 is a male not board certified
 assistant professor who is in the ‘Medicine’ department. This individual
 does research primarily and has 2 years of experience with a publication
 rate of 5.
+
+``` r
+anova(f4)
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: log.mean
+    ##              Df Sum Sq Mean Sq  F value  Pr(>F)    
+    ## dept          5 48.608  9.7217 553.4315 < 2e-16 ***
+    ## clin          1  2.427  2.4268 138.1529 < 2e-16 ***
+    ## cert          1  2.832  2.8317 161.1988 < 2e-16 ***
+    ## Exper         1  7.461  7.4608 424.7247 < 2e-16 ***
+    ## rank          2  1.507  0.7535  42.8960 < 2e-16 ***
+    ## gender        1  0.031  0.0308   1.7537 0.18664    
+    ## rank:gender   2  0.112  0.0559   3.1796 0.04331 *  
+    ## Residuals   247  4.339  0.0176                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1

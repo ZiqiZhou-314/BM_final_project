@@ -6,36 +6,45 @@ Ziqi Zhou
 # Method
 
 Our dataset contains 7 factors that are potentially associated with the
-salaries of the faculties. These are departure, gender, what they
-emphasis(clinical or research), cert(borad certified or not certified),
+salaries of the faculty members. These include department, gender,
+clinical or research emphasis, cert(borad certified or not certified),
 publication rate(publications on CV/ years between CV date and MD date),
-years since obtaining MD and rank. And the chose the mean of salary in
-academic year 1994 and salary after increment to salary in academic year
-1994 as our outcome. First, we drew plots to see the distribution of
-outcome, and we found it was right skewed so we decided to make log
-transformation. The distribution for the outcome are in
-supplement(fig.1). After our literature reading, we assumed that the
-gender was the main interested variable and put gender into the model.
-Therefore, we had a pool of 7 variable candidates to build a model whose
-purpose was find the association between the salary and some variables.
+years since obtaining MD and rank. The main outcome of interest is the
+salary of the 1994 and 1995 academic year. Due to the similarity in
+trend and distribution, the mean salary of these two years were
+calculated and used in all further analysis. A natural logarithmic
+transformation was performed to attentuate for the right skewedness.
 
-First, for the mean of salaries, we started with linear regression with
-gender. Then we found that dept, clin, cert, prate and exper are
-confounders and there was interaction between rank and gender. What’s
-more, we found that there was high correlation between publication rate
-and clin, so we decided to drop publication rate. We selected model
-using the criterions-based procedures. What’s more we used residuals vs
-fitted values plot, quantile-quantile plot, scale-location plot and
-residuals vs leverage to diagnose model. We ended up with the linear
-regression model concluding dept, clin, cert, exper, gender, rank and
-the interaction term between gender and rank.
+Considering the goal is to prove whether gender discrimination is
+present in setting salaries, the main variable of interest is gender.
+After extensive research on this particulary issue, it was obvious to us
+that there are many factors that could either interact, confound or not
+impact the relationship between salary and gender. Three main variables
+in this data set were selected based on our research for further
+examination as effect measure modifiers: department, rank, and
+experience. Rank was the only variable that had a significant
+interaction in this data set and thus, was included in the model.
 
-We used Cook’s distance, quantile-quantile plot, and residuals plots to
-find whether there were any outliers that would impact our model
-significantly. And we found that the 184th observation might be an
-influential point, however, given the purpose of this analyses, we
-decided to keep this
-point.
+Confounders were also identified. It was determined that dept, clin,
+cert, prate and exper were all confounders, therefore they were all
+included in the model and adjusted for. Correlation of the variables
+were looked to address any multicollinearity between the variables. It
+was observed that there was a high correlation between publication rate
+and clin and publication rate and department, therefore publication rate
+was dropped from the model. We selected model using the criterion-based
+procedures. Residuals vs fitted values plot, quantile-quantile plot,
+scale-location plot, and residuals vs leverage were used to diagnose
+model. The final linear regression model concluded gender, dept, clin,
+cert, exper, and rank.
+
+Cook’s distance, quantile-quantile plot, and residuals plots were used
+to determine any outliers and influential points that would impact our
+model significantly. It was observed that observation 184 was an
+influential point, however, given the purpose of this analysis, we
+decided to keep this observation. A Global ANOVA test conducted at the
+end on our final regression model to assess the overall association
+between gender and salary adjusting for all other
+variables.
 
 |                                   | Females (N=106)                 | Males (N=155)                    | Total (N=261)                   |
 | --------------------------------- | :------------------------------ | :------------------------------- | :------------------------------ |
@@ -279,3 +288,22 @@ summary(final_model_1)
     ## Residual standard error: 0.1541 on 102 degrees of freedom
     ## Multiple R-squared:  0.9126, Adjusted R-squared:  0.9049 
     ## F-statistic: 118.3 on 9 and 102 DF,  p-value: < 2.2e-16
+
+``` r
+anova(final_model)
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: log_mean_sal
+    ##              Df Sum Sq Mean Sq  F value    Pr(>F)    
+    ## dept          5 48.608  9.7217 553.4315 < 2.2e-16 ***
+    ## clin          1  2.427  2.4268 138.1529 < 2.2e-16 ***
+    ## cert          1  2.832  2.8317 161.1988 < 2.2e-16 ***
+    ## exper         1  7.461  7.4608 424.7247 < 2.2e-16 ***
+    ## gender        1  0.229  0.2292  13.0470 0.0003679 ***
+    ## rank          2  1.309  0.6543  37.2494 7.268e-15 ***
+    ## gender:rank   2  0.112  0.0559   3.1796 0.0433110 *  
+    ## Residuals   247  4.339  0.0176                       
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
