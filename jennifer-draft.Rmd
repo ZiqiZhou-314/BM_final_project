@@ -201,6 +201,8 @@ We should keep the influential point in the model since removing data that doesn
 anova(f4)
 
 
-
+```{r}
+anova(f4)
+```
 
 
