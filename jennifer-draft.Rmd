@@ -198,6 +198,8 @@ plot(remove.mod)
 There are no outliers for X and Y. Observation 184 is an influential point.
 We should keep the influential point in the model since removing data that doesn't necessarily fit the model isn't representative of the general population. Observation 184 is a male not board certified assistant professor who is in the 'Medicine' department. This individual does research primarily and has 2 years of experience with a publication rate of 5.
 
+anova(f4)
+
 
 
 
