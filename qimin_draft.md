@@ -1065,3 +1065,33 @@ ols_plot_cooksd_bar(model)
 ```
 
 ![](qimin_draft_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+
+``` r
+lm(log(sal_average) ~ gender*rank + dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  anova(lm(log(sal_average) ~ dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)))
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Model 1: log(sal_average) ~ gender * rank + dept + exper + clin + cert
+    ## Model 2: log(sal_average) ~ dept + exper + clin + cert
+    ##   Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
+    ## 1    247 4.3389                                  
+    ## 2    252 5.9884 -5   -1.6496 18.781 8.167e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+lm(log(sal_average) ~ gender, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
+  anova(lm(log(sal_average) ~ dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)))
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Model 1: log(sal_average) ~ gender
+    ## Model 2: log(sal_average) ~ dept + exper + clin + cert
+    ##   Res.Df    RSS Df Sum of Sq     F    Pr(>F)    
+    ## 1    259 57.971                                 
+    ## 2    252  5.988  7    51.982 312.5 < 2.2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
