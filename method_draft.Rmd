@@ -136,3 +136,7 @@ final_model_1= lm(log_mean_sal ~ dept + clin + cert + exper + gender, data = dat
 summary(final_model_1)
 ```
 
+```{r}
+anova(final_model)
+```
+
