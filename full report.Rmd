@@ -1,15 +1,8 @@
 ---
-<<<<<<< HEAD
-title: "Full report"
-author: "Group 20 - James Ng, Jennifer Tang, Qimin Zhang, Ziqi Zhou"
-date: "12/14/2019"
-output: pdf_document
-=======
 title: "P8130 Biostatistical Methods I Final Project"
 author: "Group 20: James Ng, Jennifer Tang, Qimin Zhang, Ziqi Zhou"
 date: "December 16, 2019"
 output: github_document
->>>>>>> fa867fda50aa9827bbae75a1b694792b2ba9b5ab
 ---
 
 ## Abstract
