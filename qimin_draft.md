@@ -1082,16 +1082,60 @@ lm(log(sal_average) ~ gender*rank + dept + exper + clin + cert, data = data %>% 
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-lm(log(sal_average) ~ gender, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)) %>% 
-  anova(lm(log(sal_average) ~ dept + exper + clin + cert, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95)))
+fit %>% 
+  summary()
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log(sal_average) ~ gender + dept + exper + clin + 
+    ##     cert + gender * rank, data = data %>% mutate(sal_average = (sal94 + 
+    ##     sal95)/2) %>% dplyr::select(-sal94, -sal95))
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.32667 -0.08080 -0.01075  0.07646  0.86686 
+    ## 
+    ## Coefficients:
+    ##                Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)   10.959335   0.027936 392.307  < 2e-16 ***
+    ## gender1        0.074479   0.027568   2.702  0.00738 ** 
+    ## dept2         -0.175544   0.028871  -6.080 4.53e-09 ***
+    ## dept3          0.184572   0.036206   5.098 6.84e-07 ***
+    ## dept4          0.208468   0.035528   5.868 1.41e-08 ***
+    ## dept5          0.543204   0.029364  18.499  < 2e-16 ***
+    ## dept6          0.931388   0.035267  26.409  < 2e-16 ***
+    ## exper          0.018171   0.001806  10.064  < 2e-16 ***
+    ## clin1          0.197031   0.022175   8.885  < 2e-16 ***
+    ## cert1          0.191213   0.021363   8.951  < 2e-16 ***
+    ## rank2          0.173142   0.033904   5.107 6.55e-07 ***
+    ## rank3          0.282281   0.039594   7.129 1.11e-11 ***
+    ## gender1:rank2 -0.082943   0.044750  -1.853  0.06501 .  
+    ## gender1:rank3 -0.105271   0.046654  -2.256  0.02492 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.1325 on 247 degrees of freedom
+    ## Multiple R-squared:  0.9355, Adjusted R-squared:  0.9322 
+    ## F-statistic: 275.8 on 13 and 247 DF,  p-value: < 2.2e-16
+
+``` r
+anova(
+lm(log(sal_average) ~ dept + exper + clin + cert + rank*gender, data = data %>% mutate(sal_average = (sal94 + sal95)/2) %>% dplyr::select(-sal94, -sal95))
+)
 ```
 
     ## Analysis of Variance Table
     ## 
-    ## Model 1: log(sal_average) ~ gender
-    ## Model 2: log(sal_average) ~ dept + exper + clin + cert
-    ##   Res.Df    RSS Df Sum of Sq     F    Pr(>F)    
-    ## 1    259 57.971                                 
-    ## 2    252  5.988  7    51.982 312.5 < 2.2e-16 ***
+    ## Response: log(sal_average)
+    ##              Df Sum Sq Mean Sq  F value  Pr(>F)    
+    ## dept          5 48.608  9.7217 553.4315 < 2e-16 ***
+    ## exper         1  9.259  9.2593 527.1085 < 2e-16 ***
+    ## clin          1  2.091  2.0905 119.0084 < 2e-16 ***
+    ## cert          1  1.369  1.3695  77.9594 < 2e-16 ***
+    ## rank          2  1.507  0.7535  42.8960 < 2e-16 ***
+    ## gender        1  0.031  0.0308   1.7537 0.18664    
+    ## rank:gender   2  0.112  0.0559   3.1796 0.04331 *  
+    ## Residuals   247  4.339  0.0176                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1

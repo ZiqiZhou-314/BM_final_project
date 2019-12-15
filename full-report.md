@@ -1,7 +1,23 @@
-Full report
+P8130 Biostatistical Methods I Final Project
 ================
-Group 20 - James Ng, Jennifer Tang, Qimin Zhang, Ziqi Zhou
-12/14/2019
+Group 20: James Ng, Jennifer Tang, Qimin Zhang, Ziqi Zhou
+December 16, 2019
+
+## Abstract
+
+There are many factors that contribute to the salary of physicians in
+medical colleges. In this study, a linear model with mean salaries of
+1994 and 1995 as response and gender as main factor is fit to a lawsuit
+dataset to determine whether Houston College of Medicine has engaged in
+a pattern and practice of discrimination against women in giving
+promotions and setting salaries. Department, primary emphasis,
+certification, publication rate and experience were determined to be
+confounders, while rank was found to be an interaction. Gender
+demonstrates no association with salary from 1994 and 1995 after
+adjusting for department affliation, clinical emphasis, board
+certification status, rank, and experience, which means the data does
+not support the claim of gender discrimination in setting salaries at
+Houston College of Medicine.
 
 ## Introduction
 
@@ -52,9 +68,9 @@ discrimination in the salary determination at this university hospital.
 
 # Methods
 
-The dataset contains 7 factors that are potentially associated with the
-salaries of the Houston College of Medicine faculty. These are
-department, gender, primary emphasis (clinical or research),
+\<\<\<\<\<\<\< HEAD The dataset contains 7 factors that are potentially
+associated with the salaries of the Houston College of Medicine faculty.
+These are department, gender, primary emphasis (clinical or research),
 certification (board certified or not certified), publication rate
 (publications on CV/ years between CV date and MD date), years since
 obtaining MD and rank (supplemental table 1. The mean salary for the
@@ -64,15 +80,48 @@ were made to visualize the distribution of the outcomes. The histograms
 show right skewness so log transformations of the outcomes were carried
 out (supplemental figure 1). Since gender was the main variable of
 interest, models were analyzed in R studio (RStudio Team, 2015) to test
-for associations between gender and salary. A simple linear regression
-model was developed using mean salaries for the 2 years provided and
-gender. Using this model as the reference point, other variables in the
-dataset were analyzed as potential confounders or interactions. Model
-selection was made using criterion-based procedures. Once the final
-model was determined (supplemental table 2), residuals vs fitted values
-plot, quantile-quantile plot, scale-location plot and residuals vs
-leverage plots were used to diagnose the model (supplemental figure 2)
-and anova was used to determine significance (Supplemental table 3).
+for associations between gender and
+salary.
+
+# A simple linear regression model was developed using mean salaries for the 2 years provided and gender. Using this model as the reference point, other variables in the dataset were analyzed as potential confounders or interactions. Model selection was made using criterion-based procedures. Once the final model was determined (supplemental table 2), residuals vs fitted values plot, quantile-quantile plot, scale-location plot and residuals vs leverage plots were used to diagnose the model (supplemental figure 2) and anova was used to determine significance (Supplemental table 3).
+
+The dataset contains 7 factors that are potentially associated with the
+salaries of the Houston College of Medicine faculty. These are
+department, gender, primary emphasis (clinical or research),
+certification (board certified or not certified), publication rate
+(publications on CV/ years between CV date and MD date), years since
+obtaining MD and rank (supplemental table 1. The mean salary for the
+1994 academic year and the salary for the 1995 academic year (salary
+after increment to the 1994 income) are the outcomes. Histograms were
+made to visualize the distribution of the outcomes. A natural
+logarithmic transformation was performed to attentuate for the right
+skewedness (supplemental figure 1). Since gender was the main variable
+of interest, models were analyzed in R studio (RStudio Team, 2015) to
+test for associations between gender and salary. A simple linear
+regression model was developed using mean salaries for the 2 years
+provided and gender. Using this model as the reference point, other
+variables in the dataset were analyzed as potential confounders or
+interactions.
+
+After extensive research on this particulary issue, it was obvious to us
+that there are many factors that could either interact, confound or not
+impact the relationship between salary and gender. Three main variables
+in this data set were selected based on our research for further
+examination as effect measure modifiers: department, rank, and
+experience. Rank was the only variable that had a significant
+interaction in this data set and thus, was included in the
+model.Confounders were also identified. It was determined that dept,
+clin, cert, prate and exper were all confounders, therefore they were
+all included in the model and adjusted for.
+
+Correlation of the variables were looked to address any
+multicollinearity between the variables. Model selection was made using
+criterion-based procedures. Once the final model was determined
+(supplemental table 2), residuals vs fitted values plot,
+quantile-quantile plot, scale-location plot and residuals vs leverage
+plots were used to diagnose the model (supplemental figure 2) and anova
+was used to determine significance (Supplemental table 3).
+\>\>\>\>\>\>\> fa867fda50aa9827bbae75a1b694792b2ba9b5ab
 
 # Results
 
@@ -108,22 +157,24 @@ meaning that salary among male and female physicians differ depending on
 the position held. The difference in salaries between male and female
 physicians at the Houston College of Medicine could be due to other
 factors, particularly rank since the claim on the failure in giving
-promotions to female faculty member was also in the lawsuit. Under the
-assumption that Houston College of Medicine, like most universities,
-operates under a tenature system, where salary is based on academic
-productivity, women in Houston College would get paid less based on the
-unproportional distribution of male full time professors compared to
-female full time professors, seen in (Supplemental table 1) (Reed et al,
-2011). Other studies have also shown that differences in salaries
-between male and female physicians may be due to characteristic
+promotions to female faculty member was also in the lawsuit.
+
+Under the assumption that Houston College of Medicine, like most
+universities, operates under a tenure system, where salary is based on
+academic productivity, women in Houston College would get paid less
+based on the unproportional distribution of male full time professors
+compared to female full time professors, seen in (Supplemental table 1)
+(Reed et al, 2011). Other studies have also shown that differences in
+salaries between male and female physicians may be due to characteristic
 differences that are affliated with gender roles such as specialty
 choice, number of hours worked, practice setting, and work-life balance
-(Baker, 1996 and Butkus et al, 2018). Futhermore, it was determined that
-physician 184 is an influential point based on the standardized
-residuals. Physician 184 is a male uncertified assistant professor in
-the department of medicine, with a research emphasis, a 5.1 publication
-rate, and has 2 years experience since obtaining MD. With all things
-considered, physician 184 has an unusually high salary. This could be
-due to other factors that were not included in this data set such as the
-importance of research and publication this particular physician was
-involved in or the number of hours he works.
+(Baker, 1996 and Butkus et al, 2018).
+
+Futhermore, it was determined that physician 184 is an influential point
+based on the standardized residuals. Physician 184 is a male uncertified
+assistant professor in the department of medicine, with a research
+emphasis, a 5.1 publication rate, and has 2 years experience since
+obtaining MD. With all things considered, physician 184 has an unusually
+high salary. This could be due to other factors that were not included
+in this data set such as the importance of research and publication this
+particular physician was involved in or the number of hours he works.
