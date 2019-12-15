@@ -1,8 +1,8 @@
 ---
 title: "Supplemental"
-author: "Group 20 - James Ng, Jennifer tang, ZIqi, Qimin"
+author: "Group 20 - James Ng, Jennifer Tang, Qimin Zhang, Ziqi Zhou"
 date: "12/14/2019"
-output: word_document
+output: github_document
 ---
 
 ```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
@@ -18,7 +18,7 @@ Lawsuit <- read_csv("data/Lawsuit.csv")
 attach(Lawsuit)
 ```
 
-```{r Descriptive Statistics}
+```{r Descriptive Statistics, echo=FALSE, message=FALSE, warning=FALSE}
 dept=as.factor(Lawsuit$Dept)
 dept= recode(dept, "1"="Biochemistry/Molecular Biology", "2"="Physiology", 
              "3"="Genetics", "4"="Pediatrics", "5"="Medicine", "6"="Surgery")
@@ -38,8 +38,8 @@ tab1= tableby(gender~dept+clin+cert+Prate+Exper+rank+Sal94+Sal95, data=Lawsuit, 
 #summary(tab1, text=TRUE)
 
 ```
-Supplemental Figure 1
-```{r distribution of salary}
+## Supplemental Figure 1
+```{r distribution of salary, echo=FALSE, message=FALSE, warning=FALSE}
 par(mfrow=c(2,3))
 hist(Sal94)
 hist(Sal95)
@@ -55,103 +55,103 @@ hist(trans.sal95)
 
 hist(log.mean)
 ```
-Supplemental Figure 1 - Distribution of salary for 1994(a), 1995(b), and the average of both academic years(c) is right skewed. Log Transformation of 1994(d), 1995(e), and averaged salary(f) shows a normal distribution.
+**Supplemental Figure 1 -** Distribution of salary for 1994(a), 1995(b), and the average of both academic years(c) is right skewed. Log Transformation of 1994(d), 1995(e), and averaged salary(f) shows a normal distribution.
 
-``` {r Looking at Salary in 1994}
+``` {r Looking at Salary in 1994, echo=FALSE, message=FALSE, warning=FALSE}
 
 ###  confounders
-mod94=lm(trans.sal94~gender); summary(mod94) 
+mod94=lm(trans.sal94~gender); # summary(mod94) 
 # gender-dept
-summary(lm(trans.sal94~gender+dept))
+# summary(lm(trans.sal94~gender+dept))
 # gender-clin
-summary(lm(trans.sal94~gender+clin))
+# summary(lm(trans.sal94~gender+clin))
 # gender-cert
-summary(lm(trans.sal94~gender+cert))
+# summary(lm(trans.sal94~gender+cert))
 # gender-Prate
-summary(lm(trans.sal94~gender+Prate))
+# summary(lm(trans.sal94~gender+Prate))
 # gender-Exper
-summary(lm(trans.sal94~gender+Exper))
+# summary(lm(trans.sal94~gender+Exper))
 # gender- rank
-summary(lm(trans.sal94~gender+rank))
+# summary(lm(trans.sal94~gender+rank))
 
 #### interactions: dept, experience, rank
 
 #gender-dept
-summary(lm(trans.sal94~gender*dept))
+# summary(lm(trans.sal94~gender*dept))
 # gender-experience 
-summary(lm(trans.sal94~gender*Exper))
+# summary(lm(trans.sal94~gender*Exper))
 #gender-rank
-summary(lm(trans.sal94~gender*rank))
+# summary(lm(trans.sal94~gender*rank))
 f1=lm(trans.sal94~dept+clin+cert+Prate+Exper+rank*gender)
-summary(f1)
+# summary(f1)
 
 ```
 
-```{r Residual plots for model 1994}
-par(mfrow=c(2,2))
-plot(f1)
+```{r Residual plots for model 1994, echo=FALSE, message=FALSE, warning=FALSE}
+# par(mfrow=c(2,2))
+# plot(f1)
 ```
 
-```{r Looking at Salary in 1995}
-mod95=lm(trans.sal95~gender);summary(mod95)
+```{r Looking at Salary in 1995, echo=FALSE, message=FALSE, warning=FALSE}
+mod95=lm(trans.sal95~gender);# summary(mod95)
 
 # gender-dept
-summary(lm(trans.sal95~gender+dept))
+# summary(lm(trans.sal95~gender+dept))
 # gender-clin
-summary(lm(trans.sal95~gender+clin))
+# summary(lm(trans.sal95~gender+clin))
 # gender-certs
-summary(lm(trans.sal95~gender+cert))
+# summary(lm(trans.sal95~gender+cert))
 # gender-Prate
-summary(lm(trans.sal95~gender+Prate))
+# summary(lm(trans.sal95~gender+Prate))
 # gender-Exper
-summary(lm(trans.sal95~gender+Exper))
+# summary(lm(trans.sal95~gender+Exper))
 # gender- rank
-summary(lm(trans.sal95~gender+rank))
+# summary(lm(trans.sal95~gender+rank))
 # interaction of dept, exper, rank
-summary(lm(trans.sal95~gender*dept)) 
-summary(lm(trans.sal95~gender*Exper)) 
-summary(lm(trans.sal95~gender*rank)) 
+# summary(lm(trans.sal95~gender*dept)) 
+# summary(lm(trans.sal95~gender*Exper)) 
+# summary(lm(trans.sal95~gender*rank)) 
 
 f2=lm(trans.sal95~dept+clin+cert+Prate+Exper+rank*gender)
-summary(f2)
+# summary(f2)
 ```
 
-```{r Residual plots for 1995}
-par(mfrow=c(2,2))
-plot(f2)
+```{r Residual plots for 1995, echo=FALSE, message=FALSE, warning=FALSE}
+# par(mfrow=c(2,2))
+# plot(f2)
 ```
 
-```{r Average Salary of 1994 and 1995}
+```{r Average Salary of 1994 and 1995, echo=FALSE, message=FALSE, warning=FALSE}
 mean.salary=(Sal94+Sal95)/2
-hist(mean.salary)
+# hist(mean.salary)
 log.mean=log(mean.salary)
-hist(log.mean)
+# hist(log.mean)
 
-mean.mod=lm(log.mean~gender); summary(mean.mod)
+mean.mod=lm(log.mean~gender); # summary(mean.mod)
 # there is association between mean salary of 1994 and 1995 and gender
 
 #confounders
-summary(lm(log.mean~gender+dept)) # confounder
-summary(lm(log.mean~gender+clin)) # confounder
-summary(lm(log.mean~gender+cert)) # confounder
-summary(lm(log.mean~gender+Prate)) # confounder
-summary(lm(log.mean~gender+Exper)) # confounder
-summary(lm(log.mean~gender+rank)) # not a confounder
+# summary(lm(log.mean~gender+dept)) # confounder
+# summary(lm(log.mean~gender+clin)) # confounder
+# summary(lm(log.mean~gender+cert)) # confounder
+# summary(lm(log.mean~gender+Prate)) # confounder
+# summary(lm(log.mean~gender+Exper)) # confounder
+# summary(lm(log.mean~gender+rank)) # not a confounder
 
 #interactions
-summary(lm(log.mean~gender*dept)) # no interaction
-summary(lm(log.mean~gender*rank)) # interaction with full professor
-summary(lm(log.mean~gender*Exper)) # no interaction
+# summary(lm(log.mean~gender*dept)) # no interaction
+# summary(lm(log.mean~gender*rank)) # interaction with full professor
+# summary(lm(log.mean~gender*Exper)) # no interaction
 
 f3= lm(log.mean~dept+clin+cert+Prate+Exper+gender*rank)
-summary(f3);
+# summary(f3);
 ```
  
 
-```{r MULTICOLLINEARITY}
+```{r MULTICOLLINEARITY, echo=FALSE, message=FALSE, warning=FALSE}
 
 #suspect multicolinearity of publication rate (based on literature and background research)
-cor(Lawsuit)
+# cor(Lawsuit)
 
 #high correlation between Prate-clin and prate-dept
 #can also check VIF
@@ -160,38 +160,56 @@ cor(Lawsuit)
 
 ```
 
-Supplemental Figure 2
-
-```{r final model}
+## Supplemental Figure 2
+```{r final model, echo=FALSE, message=FALSE, warning=FALSE}
 
 #******* final model *********** 
 
 f4= lm(log.mean~dept+clin+cert+Exper+rank*gender)
-summary(f4)
+# summary(f4)
 
 par(mfrow=c(2,2))
 plot(f4)
 ```
-Supplemental figure 2 Cook’s distance, quantile-quantile plot, and residuals plots show that the 184th observation is an influential point
+**Supplemental figure 2 -** Residuals vs. Fitted (a), quantile-quantile plot(b), scale location plot(c) and Cook’s distance plot(d) all show the 184th observation is an outlier and potential influential point
 
-
-```{r}
-summary(f4)
+## Supplemental Table 1
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(summary(tab1))
+#summary(tab1, text=TRUE)
 ```
 
+**Supplement Table 1 -** General descriptive statistics about the data set.
 
-######### outliers and influence points
-```{r}
-rstandard(f4)
+## Supplemental Table 2
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+f4 %>% 
+  broom::tidy() %>% 
+  knitr::kable()
 ```
 
-```{r}
-hat=hatvalues(f4); hat
-hat[hat>0.2]
+**Supplement Table 2 -** Final model of the data set. Coefficient estimates, standard errors and p values are included.
+
+
+## Supplemental Table 3
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(anova(f4))
+```
+
+**Supplement Table 3 -** Anova test of the model. The p-value for gender was 0.186. This value means that gender as the main covariate of interest is not a significant contributor to the model when adjusting for department, primary emphasis, certifcation, experience, and rank.
+
+
+```{r outliers and influence points, echo=FALSE, message=FALSE, warning=FALSE}
+# rstandard(f4)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+hat=hatvalues(f4); #hat
+#hat[hat>0.2]
 #named numeric(0)
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
 # remove observation 184 from the mean salary
 remove_184=Lawsuit[-c(184),]
@@ -204,18 +222,13 @@ rank184=as.factor(remove_184$Rank)
 
 remove.mod=lm(log.mean184~dept184+clin184+cert184+
                 Exper+gender184*rank184, data=remove_184)
-summary(remove.mod)
-par(mfrow=c(2,2))
-plot(remove.mod)
+# summary(remove.mod)
+# par(mfrow=c(2,2))
+# plot(remove.mod)
 ```
-There are no outliers for X and Y. Observation 184 is an influential point.
-We should keep the influential point in the model since removing data that doesn't necessarily fit the model isn't representative of the general population. Observation 184 is a male not board certified assistant professor who is in the 'Medicine' department. This individual does research primarily and has 2 years of experience with a publication rate of 5.
 
-anova(f4)
-
-
-```{r}
-anova(f4)
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# anova(f4)
 ```
 
 
