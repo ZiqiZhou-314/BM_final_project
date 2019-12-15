@@ -144,7 +144,7 @@ summary(lm(log.mean~gender*dept)) # no interaction
 summary(lm(log.mean~gender*rank)) # interaction with full professor
 summary(lm(log.mean~gender*Exper)) # no interaction
 
-f3= lm(log.mean~dept+clin+cert+Prate+Exper+gender*rank)
+f3= lm(log.mean~dept+clin+cert+Prate+Exper+rank*gender)
 summary(f3);
 ```
  
@@ -162,7 +162,6 @@ should drop prate variable
 ```{r}
 f4= lm(log.mean~dept+clin+cert+Exper+rank*gender)
 summary(f4)
-
 par(mfrow=c(2,2))
 plot(f4)
 ```
@@ -190,7 +189,7 @@ cert184= as.factor(remove_184$Cert)
 rank184=as.factor(remove_184$Rank)
 
 remove.mod=lm(log.mean184~dept184+clin184+cert184+
-                Exper+gender184*rank184, data=remove_184)
+                Exper+rank184*gender184, data=remove_184)
 summary(remove.mod)
 par(mfrow=c(2,2))
 plot(remove.mod)
