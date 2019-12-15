@@ -16,7 +16,8 @@ normal distribution.
 ![](supplemental_files/figure-gfm/final%20model-1.png)<!-- -->
 **Supplemental figure 2 -** Residuals vs. Fitted (a), quantile-quantile
 plot(b), scale location plot(c) and Cook’s distance plot(d) all show the
-184th observation is an outlier and potential influential point
+184th observation is an outlier and potential influential
+point
 
 ## Supplemental Table 1
 
