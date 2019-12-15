@@ -1,9 +1,5 @@
 References
 ================
-Group 20 - James Ng, Jennifer Tang, Qimin Zhang, Ziqi Zhou
-12/14/2019
-
-## References
 
 1.  Baker, L. C. (1996). Differences in earnings between male and female
     physicians. New England Journal of Medicine, 334(15), 960-964.

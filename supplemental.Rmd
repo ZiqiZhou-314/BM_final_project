@@ -1,9 +1,8 @@
 ---
-title: "Supplemental"
-author: "Group 20 - James Ng, Jennifer Tang, Qimin Zhang, Ziqi Zhou"
-date: "12/14/2019"
-output: github_document
+output: pdf_document
 ---
+
+## Supplementary Figures
 
 ```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
 library(arsenal)
@@ -38,24 +37,38 @@ tab1= tableby(gender~dept+clin+cert+Prate+Exper+rank+Sal94+Sal95, data=Lawsuit, 
 #summary(tab1, text=TRUE)
 
 ```
-## Supplemental Figure 1
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(summary(tab1))
+#summary(tab1, text=TRUE)
+```
+
+**Table 1 -** General descriptive statistics about the data set.
+\newpage
+```{r Residual plots for model 1994, echo=FALSE, message=FALSE, warning=FALSE}
+# par(mfrow=c(2,2))
+# plot(f1)
+```
+
+
 ```{r distribution of salary, echo=FALSE, message=FALSE, warning=FALSE}
-par(mfrow=c(2,3))
-hist(Sal94)
-hist(Sal95)
+#par(mfrow=c(2,3))
+#hist(Sal94)
+#hist(Sal95)
 trans.sal94=log(Sal94)
 trans.sal95= log(Sal95)
 
-
+par(mfrow=c(1,2))
 mean.salary=(Sal94+Sal95)/2
 hist(mean.salary)
 log.mean=log(mean.salary)
-hist(trans.sal94)
-hist(trans.sal95)
-
+#hist(trans.sal94)
+#hist(trans.sal95)
 hist(log.mean)
 ```
-**Supplemental Figure 1 -** Distribution of salary for 1994(a), 1995(b), and the average of both academic years(c) is right skewed. Log Transformation of 1994(d), 1995(e), and averaged salary(f) shows a normal distribution.
+
+**Figure 1 -** Average salary distribution of both academic years 1994 and 1995(a) showing is right skewedness. Log Transformation (b) shows a normal distribution.
+\newline
 
 ``` {r Looking at Salary in 1994, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -87,10 +100,6 @@ f1=lm(trans.sal94~dept+clin+cert+Prate+Exper+rank*gender)
 
 ```
 
-```{r Residual plots for model 1994, echo=FALSE, message=FALSE, warning=FALSE}
-# par(mfrow=c(2,2))
-# plot(f1)
-```
 
 ```{r Looking at Salary in 1995, echo=FALSE, message=FALSE, warning=FALSE}
 mod95=lm(trans.sal95~gender);# summary(mod95)
@@ -160,45 +169,35 @@ f3= lm(log.mean~dept+clin+cert+Prate+Exper+gender*rank)
 
 ```
 
-## Supplemental Figure 2
+
 ```{r final model, echo=FALSE, message=FALSE, warning=FALSE}
 
 #******* final model *********** 
 
 f4= lm(log.mean~dept+clin+cert+Exper+rank*gender)
 # summary(f4)
-
 par(mfrow=c(2,2))
 plot(f4)
 ```
-**Supplemental figure 2 -** Residuals vs. Fitted (a), quantile-quantile plot(b), scale location plot(c) and Cook’s distance plot(d) all show the 184th observation is an outlier and potential influential point
+**Figure 2 -** Residuals vs. Fitted (a), quantile-quantile plot(b), scale location plot(c) and Cook’s distance plot(d) all show the 184th observation is an outlier and potential influential point
 
-## Supplemental Table 1
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-knitr::kable(summary(tab1))
-#summary(tab1, text=TRUE)
-```
 
-**Supplement Table 1 -** General descriptive statistics about the data set.
 
-## Supplemental Table 2
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 f4 %>% 
   broom::tidy() %>% 
   knitr::kable()
 ```
 
-**Supplement Table 2 -** Final model of the data set. Coefficient estimates, standard errors and p values are included.
+**Table 2 -** Final model of the data set. Coefficient estimates, standard errors and p values are included.
+\newline
+\newline
 
-
-## Supplemental Table 3
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 knitr::kable(anova(f4))
 ```
 
-**Supplement Table 3 -** Anova test of the model. The p-value for gender was 0.186. This value means that gender as the main covariate of interest is not a significant contributor to the model when adjusting for department, primary emphasis, certifcation, experience, and rank.
-
-
+**Table 3 -** Anova test of the model. The p-value for gender was 0.186. This value means that gender as the main covariate of interest is not a significant contributor to the model when adjusting for department, primary emphasis, certifcation, experience, and rank.
 ```{r outliers and influence points, echo=FALSE, message=FALSE, warning=FALSE}
 # rstandard(f4)
 ```
