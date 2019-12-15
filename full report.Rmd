@@ -7,7 +7,7 @@ output: github_document
 
 ## Abstract
 
-There are many factors that contribute to the salary of physicians in medical colleges. In this study, a linear model with mean salaries of 1994 and 1995 as response and gender as main factor is fit to a lawsuit dataset to determine whether Houston College of Medicine has engaged in a pattern and practice of discrimination against women in giving promotions and setting salaries. Department, primary emphasis, certification, publication rate and experience were determined to be confounders, while rank was found to be an interaction. Gender demonstrates no association with salary from 1994 and 1995 after adjusting for department affliation, clinical emphasis, board certification status, rank, and experience, which means the data does not support the claim of gender discrimination in setting salaries at Houston College of Medicine. 
+There are many factors that contribute to the salary of physicians in medical colleges. In this study, a linear model of the mean salaries from 1994 to 1995 is the main outcome and gender is main factor, was fitted to determine whether Houston College of Medicine has engaged in a pattern and practice of discrimination against women in giving promotions and setting salaries. Department, primary emphasis, certification, publication rate and experience were determined to be confounders, while rank was found to be an interaction. Gender demonstrates no association with salary from 1994 and 1995 after adjusting for department affliation, clinical emphasis, board certification status, rank, and experience, which means the data does not support the claim of gender discrimination in setting salaries at Houston College of Medicine. 
 
 ## Introduction
 
