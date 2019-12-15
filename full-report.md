@@ -3,13 +3,17 @@ P8130 Biostatistical Methods I Final Project
 Group 20: James Ng, Jennifer Tang, Qimin Zhang, Ziqi Zhou
 December 16, 2019
 
+
+
+
+
 ## Abstract
 
 There are many factors that contribute to the salary of physicians in
-medical colleges. In this study, a linear model with mean salaries of
-1994 and 1995 as response and gender as main factor is fit to a lawsuit
-dataset to determine whether Houston College of Medicine has engaged in
-a pattern and practice of discrimination against women in giving
+medical colleges. In this study, a linear model of the mean salaries
+from 1994 to 1995 is the main outcome and gender is main factor, was
+fitted to determine whether Houston College of Medicine has engaged in a
+pattern and practice of discrimination against women in giving
 promotions and setting salaries. Department, primary emphasis,
 certification, publication rate and experience were determined to be
 confounders, while rank was found to be an interaction. Gender
@@ -68,22 +72,37 @@ discrimination in the salary determination at this university hospital.
 
 # Methods
 
-\<\<\<\<\<\<\< HEAD The dataset contains 7 factors that are potentially
-associated with the salaries of the Houston College of Medicine faculty.
-These are department, gender, primary emphasis (clinical or research),
+The dataset contains 7 factors that are potentially associated with the
+salaries of the Houston College of Medicine faculty. These are
+department, gender, primary emphasis (clinical or research),
 certification (board certified or not certified), publication rate
 (publications on CV/ years between CV date and MD date), years since
 obtaining MD and rank (supplemental table 1. The mean salary for the
 1994 academic year and the salary for the 1995 academic year (salary
 after increment to the 1994 income) are the outcomes. Histograms were
-were made to visualize the distribution of the outcomes. The histograms
-show right skewness so log transformations of the outcomes were carried
-out (supplemental figure 1). Since gender was the main variable of
-interest, models were analyzed in R studio (RStudio Team, 2015) to test
-for associations between gender and
-salary.
+were made to visualize the distribution of the outcomes. A natural
+logarithmic transformation was performed to attentuate for the right
+skewedness (supplemental figure 1).t (supplemental figure 1). Since
+gender was the main variable of interest, models were analyzed in R
+studio (RStudio Team, 2015) to test for associations between gender and
+salary. A simple linear regression model was developed using mean
+salaries for the 2 years provided and gender. Using this model as the
+reference point, other variables in the dataset were analyzed as
+potential confounders or interactions.
 
-# A simple linear regression model was developed using mean salaries for the 2 years provided and gender. Using this model as the reference point, other variables in the dataset were analyzed as potential confounders or interactions. Model selection was made using criterion-based procedures. Once the final model was determined (supplemental table 2), residuals vs fitted values plot, quantile-quantile plot, scale-location plot and residuals vs leverage plots were used to diagnose the model (supplemental figure 2) and anova was used to determine significance (Supplemental table 3).
+After extensive research on this particulary issue, it was obvious to us
+that there are many factors that could either interact, confound or not
+impact the relationship between salary and gender. Three main variables
+in this data set were selected based on our research for further
+examination as effect measure modifiers: department, rank, and
+experience. Rank was the only variable that had a significant
+interaction in this data set and thus, was included in the
+model.Confounders were also identified. It was determined that dept,
+clin, cert, prate and exper were all confounders, therefore they were
+all included in the model and adjusted
+for.
+
+# Correlation of the variables were looked to address any multicollinearity between the variables. Model selection was made using criterion-based procedures. Once the final model was determined (supplemental table 2), residuals vs fitted values plot, quantile-quantile plot, scale-location plot and residuals vs leverage plots were used to diagnose the model (supplemental figure 2) and anova was used to determine overall significance taking into account of the categorical levels in the data (Supplemental table 3).
 
 The dataset contains 7 factors that are potentially associated with the
 salaries of the Houston College of Medicine faculty. These are
