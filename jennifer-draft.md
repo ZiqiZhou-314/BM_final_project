@@ -8,86 +8,14 @@ Libraries
 ``` r
 library(arsenal)
 library(dplyr)
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 library(HH)
 ```
-
-    ## Loading required package: lattice
-
-    ## Loading required package: grid
-
-    ## Loading required package: latticeExtra
-
-    ## Loading required package: RColorBrewer
-
-    ## Loading required package: multcomp
-
-    ## Loading required package: mvtnorm
-
-    ## Loading required package: survival
-
-    ## Loading required package: TH.data
-
-    ## Loading required package: MASS
-
-    ## 
-    ## Attaching package: 'MASS'
-
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     select
-
-    ## 
-    ## Attaching package: 'TH.data'
-
-    ## The following object is masked from 'package:MASS':
-    ## 
-    ##     geyser
-
-    ## Loading required package: gridExtra
-
-    ## 
-    ## Attaching package: 'gridExtra'
-
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     combine
 
 Importing data
 
 ``` r
 library(readr)
 Lawsuit <- read_csv("data/Lawsuit.csv")
-```
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   ID = col_double(),
-    ##   Dept = col_double(),
-    ##   Gender = col_double(),
-    ##   Clin = col_double(),
-    ##   Cert = col_double(),
-    ##   Prate = col_double(),
-    ##   Exper = col_double(),
-    ##   Rank = col_double(),
-    ##   Sal94 = col_double(),
-    ##   Sal95 = col_double()
-    ## )
-
-``` r
 View(Lawsuit)
 attach(Lawsuit)
 ```
@@ -1071,14 +999,14 @@ summary(lm(log.mean~gender*Exper)) # no interaction
     ## F-statistic: 18.99 on 3 and 257 DF,  p-value: 3.709e-11
 
 ``` r
-f3= lm(log.mean~dept+clin+cert+Prate+Exper+gender*rank)
+f3= lm(log.mean~dept+clin+cert+Prate+Exper+rank*gender)
 summary(f3);
 ```
 
     ## 
     ## Call:
     ## lm(formula = log.mean ~ dept + clin + cert + Prate + Exper + 
-    ##     gender * rank)
+    ##     rank * gender)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
@@ -1096,11 +1024,11 @@ summary(f3);
     ## certBoard Certified              0.192429   0.021351   9.013  < 2e-16 ***
     ## Prate                           -0.022651   0.017216  -1.316 0.189496    
     ## Exper                            0.018489   0.001819  10.164  < 2e-16 ***
-    ## genderMales                      0.068480   0.027902   2.454 0.014811 *  
     ## rankAssociate                    0.171038   0.033892   5.047 8.75e-07 ***
     ## rankFull professor               0.280240   0.039566   7.083 1.48e-11 ***
-    ## genderMales:rankAssociate       -0.083444   0.044685  -1.867 0.063039 .  
-    ## genderMales:rankFull professor  -0.106694   0.046598  -2.290 0.022887 *  
+    ## genderMales                      0.068480   0.027902   2.454 0.014811 *  
+    ## rankAssociate:genderMales       -0.083444   0.044685  -1.867 0.063039 .  
+    ## rankFull professor:genderMales  -0.106694   0.046598  -2.290 0.022887 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -1109,12 +1037,8 @@ summary(f3);
     ## F-statistic:   257 on 14 and 246 DF,  p-value: < 2.2e-16
 
 MULTICOLLINEARITY suspect multicolinearity of publication rate (based on
-<<<<<<< HEAD
 literature and background
     research)
-=======
-literature and background research)
->>>>>>> 5cec2eb1f42abcf2faa69f2c04a144b06385c576
 
 ``` r
 cor(Lawsuit)
@@ -1389,14 +1313,14 @@ cert184= as.factor(remove_184$Cert)
 rank184=as.factor(remove_184$Rank)
 
 remove.mod=lm(log.mean184~dept184+clin184+cert184+
-                Exper+gender184*rank184, data=remove_184)
+                Exper+rank184*gender184, data=remove_184)
 summary(remove.mod)
 ```
 
     ## 
     ## Call:
     ## lm(formula = log.mean184 ~ dept184 + clin184 + cert184 + Exper + 
-    ##     gender184 * rank184, data = remove_184)
+    ##     rank184 * gender184, data = remove_184)
     ## 
     ## Residuals:
     ##    Min     1Q Median     3Q    Max 
@@ -1413,11 +1337,11 @@ summary(remove.mod)
     ## clin1841             28213.6     4225.8   6.677 1.61e-10 ***
     ## cert1841             22613.6     4055.3   5.576 6.45e-08 ***
     ## Exper                 3191.0      340.9   9.361  < 2e-16 ***
-    ## gender1841           -9009.1     5262.5  -1.712 0.088168 .  
     ## rank1842             17052.9     6399.4   2.665 0.008214 ** 
     ## rank1843             30751.7     7474.8   4.114 5.31e-05 ***
-    ## gender1841:rank1842   7154.9     8492.4   0.843 0.400321    
-    ## gender1841:rank1843  10683.5     8837.2   1.209 0.227853    
+    ## gender1841           -9009.1     5262.5  -1.712 0.088168 .  
+    ## rank1842:gender1841   7154.9     8492.4   0.843 0.400321    
+    ## rank1843:gender1841  10683.5     8837.2   1.209 0.227853    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -1438,6 +1362,8 @@ general population. Observation 184 is a male not board certified
 assistant professor who is in the ‘Medicine’ department. This individual
 does research primarily and has 2 years of experience with a publication
 rate of 5.
+
+anova(f4)
 
 ``` r
 anova(f4)
